@@ -5,6 +5,9 @@ DOM:    ID: Ide de la linea (num)
 		RailT: Tipo de riel de la linea (string)
 		Sections: Lista de TDAs Section (Lista de VAR TDAs Section) *puede ser lista vacia en un inicio*
         LINE: TDA linea de metro (VAR)
+        LENGTH: largo de line| cantidad de estaciones (VAR)
+        DIS: distancia de line (VAR)
+        COS: costo de line (VAR)
 
 PREDICADOS:
 	line(ID,NOM,RailT,Sections,LINE)
@@ -17,6 +20,7 @@ PREDICADOS:
     setNameLine(LINE,NOM,LINE)
     setRailType(LINE,RailT,LINE)
     setSections(LINE,RailT,LINE)
+    lineLength(LINE,LENGTH,DIS,COS)
 
 METAS:
 	line: Relacionar elementos de una line en una variable
@@ -29,6 +33,12 @@ METAS:
     setNameLine: Line con nuevo nombre
     setRailType: Line con nuevo RailType
     setSections: Line con nuevas Sections
+    lineLength: Datos largo, distancia, costo de linea
+
+METAS SECUNDARIAS:
+    largoLista: numero de elementos de una lista
+    distanciaTotal: distancia de una lista de sections
+    costoTotal: costo de una lista de sections
 */
 :-use_module(tdaSection).
 :-use_module(tdaStation).
@@ -55,6 +65,10 @@ setSectionsLine(LINE,NewSects,NewLINE):-line(ID,NOM,RT,_,LINE),line(ID,NOM,RT,Ne
 lineLength(LINE,LENGTH,Distancia,Costo):-line(_,_,_,Sections,LINE),largoLista(Sections,LENGTH),distanciaTotal(Sections,Distancia),costoTotal(Sections,Costo).
 
 
+
+
+
+
 largoLista([],0):-!.
 largoLista([_|Y],R):-largoLista(Y,R1),R is R1+1.
 
@@ -63,3 +77,35 @@ distanciaTotal([X|Y],T):-getDistanceSection(X,DIS),distanciaTotal(Y,T1),T is T1+
 
 costoTotal([],0):-!.
 costoTotal([X|Y],T):-getCostSection(X,COS),costoTotal(Y,T1),T is T1+COS.
+
+
+
+
+
+
+
+lineSectionLength(LINE,NombreST1,NombreST2,Sections,Distancia,Costo):-line(_,_,_,ListaSections,LINE),mio(ListaSections,NombreST1,NombreST2,Sections),
+    distanciaTotal(Sections,Distancia),costoTotal(Sections,Costo).
+
+
+aux(Lista,NombreST1,NombreST2,SubLista):-
+    buscarSubListaSections(Lista,[[_,NombreST1,_,_],_,_,_],[[_,NombreST2,_,_],_,_,_],SubLista).
+
+buscarSubListaSections([SeccionActual|ColaSections],NombreST1,NombreST2,SubLista):-
+    append(_,[NombreST1|Cola],Sections),append(SubLista,[NombreST2|_],[NombreST1|Cola]),!.
+%caso en que la station2 este primero que la station1 en la lista de sections
+buscarSubListaSections([SeccionActual|ColaSections],NombreST1,NombreST2,SubLista):-             %ojo, notamos que agregamos el anterior a st1, porque en el anterior termina el la station2, es hasta ahi
+    append(_,[NombreST2|Cola],Sections),append(SubLista,[NombreST1|_],[NombreST2|Cola]),!.
+
+
+
+
+
+%ESTO FUNCIONAAA PORFINAA WENAAA, MANANA SIGO 12-05-2024   04:26   SPOTIFY: oye mi amor - mana
+mio(Lista,N1,N2,Sub):-
+    append(_,[[[ID, N1, T, Stop],St2,Dis,Cost]|Cola],Lista),
+    append(Sub,[[[_, N2, _, _],_,_,_]|_],[[[ID, N1, T, Stop],St2,Dis,Cost]|Cola]),!.
+
+mio(Lista,N1,N2,Sub):-
+    append(_,[[[ID, N2, T, Stop],St2,Dis,Cost]|Cola],Lista),
+    append(Sub,[[[_, N1, _, _],_,_,_]|_],[[[ID, N2, T, Stop],St2,Dis,Cost]|Cola]),!.

@@ -30,7 +30,7 @@ METAS PRIMARIAS:
     setTypeStation: Estacion con nuevo Tipo
     setStopTimeStation: Estacion con nuevo StopTime
 */
-:- module(tdaStation,[station/5]).
+:- module(tdaStation,[station/5,getNameStation/2]).
 
 
 %constructor
