@@ -30,6 +30,8 @@ METAS PRIMARIAS:
     setDistanceSection: Section con nueva distancia
     setCostSection: Section con nuevo costo
 */
+:- module(tdaSection,[getDistanceSection/2,getCostSection/2,section/5]).
+:- use_module(tdaStation).
 
 %constructor
 section(Station1,Station2,Distancia,Costo,[Station1,Station2,Distancia,Costo]).
