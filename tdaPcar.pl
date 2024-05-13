@@ -32,18 +32,26 @@ METAS PRIMARIAS
     setModelPcar: Pcar con nuevo modelo
     setTypePcar: Pcar con nuevo tipo
 */
+:- module(tdaPcar,[pcar/5,getTypePcar/2]).
+
 
 %constructor, FUNCIONALIDAD 9
 pcar(ID,Capacidad,Modelo,Tipo,[ID,Capacidad,Modelo,Tipo]).
 
+
+
 %pertenecia
 isPcar(PCAR):-pcar(_,_,_,_,PCAR).
+
+
 
 %selectores
 getIdPcar(PCAR,ID):-pcar(ID,_,_,_,PCAR).
 getCapacityPcar(PCAR,CAPA):-pcar(_,CAPA,_,_,PCAR).
 getModelPcar(PCAR,MOD):-pcar(_,_,MOD,_,PCAR).
 getTypePcar(PCAR,TYPE):-pcar(_,_,_,TYPE,PCAR).
+
+
 
 %modificadores
 setIdPcar(PCAR,NewID,NewPCAR):-pcar(_,CA,MO,TY,PCAR),pcar(NewID,CA,MO,TY,NewPCAR).

@@ -76,6 +76,7 @@ METAS SECUNDARIAS:
     getLastList: selector ultimo elemento de una lista
 
 */
+:-module(tdaLine,[getRailTypeLine/2]).
 :-use_module(tdaSection).
 :-use_module(tdaStation).
 
@@ -122,11 +123,11 @@ largoLista([_|Y],R):-largoLista(Y,R1),R is R1+1.
 
 %obtener la distancia total de los elementos de una lista de sections
 distanciaTotal([],0):-!.
-distanciaTotal([X|Y],T):-getDistanceSection(X,DIS),distanciaTotal(Y,T1),T is T1+DIS.
+distanciaTotal([X|Y],T):-getDistanceSection(X,DIS),distanciaTotal(Y,T1),T is T1+DIS. % getDistanceSection es del TDA section
 
 %obtener el costo total de los elementos de una lista de sections
 costoTotal([],0):-!.
-costoTotal([X|Y],T):-getCostSection(X,COS),costoTotal(Y,T1),T is T1+COS.
+costoTotal([X|Y],T):-getCostSection(X,COS),costoTotal(Y,T1),T is T1+COS. %getCostSection es del TDA section
 
 
 
@@ -172,15 +173,19 @@ listaVacia([]).
 
 %verifica que de una estacion se puede llegar a todas las demas estaciones de una lista de secciones, recordar que sections tiene las secciones ordenadas en un sentido de recorrido
 %comparacion entre el nombre de la seccion anterior y la actual (st2 y st1), por lo que partimos del segundo elementos, para poder considerar el anterior 1
-checkAllStationsConnected([[_,St2Actual,_,_]|COLA]):-checkAllStationsConnected(COLA,St2Actual),!. %notamos el uso de el mismo predicado pero con distinta aridad (especie de anidacion)
+checkAllStationsConnected([Actual|COLA]):-getStation2Section(Actual,St2Actual),checkAllStationsConnected(COLA,St2Actual),!. %notamos el uso de el mismo predicado pero con distinta aridad (especie de anidacion)
 checkAllStationsConnected([],_):-!.
-checkAllStationsConnected([[St1Actual,St2Actual,_,_]|COLA],St2Anterior):- St1Actual == St2Anterior, checkAllStationsConnected(COLA,St2Actual).
+checkAllStationsConnected([Actual|COLA],St2Anterior):- getStation1Section(Actual,St1Actual), getStation2Section(Actual,St2Actual),
+    St1Actual == St2Anterior, checkAllStationsConnected(COLA,St2Actual). %notamos la utilizacion de selectores del TDA section
 
 %determina si las secciones de una linea cumplen para ser ser linea normal, esto quiere decir que sus estaciones terminales son tipo t
-normalLine(Sections):-getFirstList(Sections,[[_,_,"t",_],_,_,_]), getLastList(Sections,[_,[_,_,"t",_],_,_]).
+normalLine(Sections):-getFirstList(Sections,FirstSections),getLastList(Sections,LastSection),getStation1Section(FirstSections,FirstStation),
+    getStation2Section(LastSection,LastStation),getTypeStation(FirstStation,TypeFirtStation),getTypeStation(LastStation,TypeLastStation),
+    TypeFirtStation == "t", TypeLastStation == "t".   % usamos selectores TDSA station
 
 %determina si las secciones de una linea cumplen para ser linea circular, es decir, la primera st1 y ultima st2 son la misma
-circularLine(Sections):-getFirstList(Sections,[StationPivote,_,_,_]), getLastList(Sections,[_,StationPivote,_,_]).
+circularLine(Sections):-getFirstList(Sections,FirstSections),getLastList(Sections,LastSection),getStation1Section(FirstSections,FirstStation),
+    getStation2Section(LastSection,LastStation),FirstStation == LastStation.   % usamos selectores TDSA station
 
 %selector primer elemento de una lista
 getFirstList([X|_],X).
