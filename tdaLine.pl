@@ -47,7 +47,7 @@ METAS SECUNDARIAS:
 line(ID,Nombre,RailType,Sections,[ID,Nombre,RailType,Sections]).
 
 %pertenecia
-isLine(LINE):-line(_,_,_,_,LINE).
+%isLine(LINE):-line(_,_,_,_,LINE).
 
 %selectores
 getIdLine(LINE,ID):-line(ID,_,_,_,LINE).
@@ -62,6 +62,9 @@ setRailTypeLine(LINE,NewRT,NewLINE):-line(ID,NOM,_,Sects,LINE),line(ID,NOM,NewRT
 setSectionsLine(LINE,NewSects,NewLINE):-line(ID,NOM,RT,_,LINE),line(ID,NOM,RT,NewSects,NewLINE).
 
 %otros predicados
+addSectionToSections(Secciones,NewSeccion,NewSecciones):-append(Secciones,[NewSeccion],NewSecciones).
+
+/*Funcionalidad 5 */
 lineLength(LINE,LENGTH,Distancia,Costo):-line(_,_,_,Sections,LINE),largoLista(Sections,LENGTH),distanciaTotal(Sections,Distancia),costoTotal(Sections,Costo).
 
 
@@ -83,29 +86,73 @@ costoTotal([X|Y],T):-getCostSection(X,COS),costoTotal(Y,T1),T is T1+COS.
 
 
 
-
-lineSectionLength(LINE,NombreST1,NombreST2,Sections,Distancia,Costo):-line(_,_,_,ListaSections,LINE),mio(ListaSections,NombreST1,NombreST2,Sections),
+/*Funcionalidad 6 */
+lineSectionLength(LINE,NombreST1,NombreST2,Sections,Distancia,Costo):-line(_,_,_,ListaSections,LINE),getSubListaSections(ListaSections,NombreST1,NombreST2,Sections),
     distanciaTotal(Sections,Distancia),costoTotal(Sections,Costo).
 
 
-aux(Lista,NombreST1,NombreST2,SubLista):-
-    buscarSubListaSections(Lista,[[_,NombreST1,_,_],_,_,_],[[_,NombreST2,_,_],_,_,_],SubLista).
-
-buscarSubListaSections([SeccionActual|ColaSections],NombreST1,NombreST2,SubLista):-
-    append(_,[NombreST1|Cola],Sections),append(SubLista,[NombreST2|_],[NombreST1|Cola]),!.
-%caso en que la station2 este primero que la station1 en la lista de sections
-buscarSubListaSections([SeccionActual|ColaSections],NombreST1,NombreST2,SubLista):-             %ojo, notamos que agregamos el anterior a st1, porque en el anterior termina el la station2, es hasta ahi
-    append(_,[NombreST2|Cola],Sections),append(SubLista,[NombreST1|_],[NombreST2|Cola]),!.
-
-
-
-
-
-%ESTO FUNCIONAAA PORFINAA WENAAA, MANANA SIGO 12-05-2024   04:26   SPOTIFY: oye mi amor - mana
-mio(Lista,N1,N2,Sub):-
+getSubListaSections(Lista,N1,N2,Sub):-
     append(_,[[[ID, N1, T, Stop],St2,Dis,Cost]|Cola],Lista),
     append(Sub,[[[_, N2, _, _],_,_,_]|_],[[[ID, N1, T, Stop],St2,Dis,Cost]|Cola]),!.
-
-mio(Lista,N1,N2,Sub):-
-    append(_,[[[ID, N2, T, Stop],St2,Dis,Cost]|Cola],Lista),
+%caso en que la station2 este primero que la station1 en la lista de sections
+getSubListaSections(Lista,N1,N2,Sub):-
+    append(_,[[[ID, N2, T, Stop],St2,Dis,Cost]|Cola],Lista),%ojo, notamos que agregamos el anterior a st segunda, porque en el anterior termina esta,y así no consideramos el tramo extra
     append(Sub,[[[_, N1, _, _],_,_,_]|_],[[[ID, N2, T, Stop],St2,Dis,Cost]|Cola]),!.
+
+
+
+
+
+
+
+
+
+
+
+
+/*Funcionalidad 7 */
+lineAddSection(LineBefore, Section, LineAfter):-line(ID,Name,RT,SectionsBefore,LineBefore), not(member(Section,SectionsBefore)), % con not member verificamos tramos no repetidos.
+    addSectionToSections(SectionsBefore,Section,SectionsAfter), line(ID,Name,RT,SectionsAfter,LineAfter).
+%recordar que si la seccion esta repetida, retorna false, por lo que se cae la conjuncion de predicados en el script de pruebas
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Funcionalidad 8 */
+isLine(LINE):- line(ID,NombreL,RTL,SectionsL,LINE), number(ID), string(NombreL), string(RTL), checkSections(SectionsL),
+    normalLine(SectionsL), checkAllStationsConnected(SectionsL),!. %caso linea normal
+isLine(LINE):- line(ID,NombreL,RTL,SectionsL,LINE), number(ID), string(NombreL), string(RTL), checkSections(SectionsL),
+    circularLine(SectionsL), checkAllStationsConnected(SectionsL),!. %caso linea cirucular
+
+% determina si los elementos de una lista son efectivamente del tipo TDA section
+checkSections([]).
+checkSections([Act|Cola]):-isSection(Act),checkSections(Cola),!.
+
+
+%verifica que de una estacion se puede llegar a todas las demas estaciones de una lista de secciones, recordar que sections tiene las secciones ordenadas en un sentido de recorrido
+%comparacion entre el nombre de la seccion anterior y la actual (st2 y st1), por lo que partimos del segundo elementos, para poder considerar el anterior 1
+checkAllStationsConnected([[_,St2Actual,_,_]|COLA]):-checkAllStationsConnected(COLA,St2Actual),!. %notamos el uso de el mismo predicado pero con distinta aridad (especie de anidacion)
+checkAllStationsConnected([],_):-!.
+checkAllStationsConnected([[St1Actual,St2Actual,_,_]|COLA],St2Anterior):- St1Actual == St2Anterior, checkAllStationsConnected(COLA,St2Actual).
+
+
+
+%determina si las secciones de una linea cumplen para ser ser linea normal, esto quiere decir que sus estaciones terminales son tipo t
+normalLine(Sections):-getFirstList(Sections,[[_,_,"t",_],_,_,_]), getLastList(Sections,[_,[_,_,"t",_],_,_]).
+
+%determina si las secciones de una linea cumplen para ser linea circular, es decir, la primera st1 y ultima st2 son la misma
+circularLine(Sections):-getFirstList(Sections,[StationPivote,_,_,_]), getLastList(Sections,[_,StationPivote,_,_]).
+
+%selector primer elemento de una lista
+getFirstList([X|_],X).
+%selector ultimo elemento de una lista
+getLastList(LIST,X):-reverse(LIST,[X|_]).
