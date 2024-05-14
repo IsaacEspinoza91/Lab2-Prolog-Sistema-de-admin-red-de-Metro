@@ -30,7 +30,7 @@ METAS PRIMARIAS:
 :-module(tdaDriver,[driver/4,getIdDriver/2,getNameDriver/2,getMakerDriver/2]).
 
 
-%constructor
+%constructor, Funcionalidad 15
 driver(ID,NAME,MAKER,[ID,NAME,MAKER]).
 
 
@@ -43,11 +43,11 @@ isDriver(DRIVER):-driver(_,_,_,DRIVER).
 %selectores
 getIdDriver(DRIVER,ID):-driver(ID,_,_,DRIVER).
 getNameDriver(DRIVER,NAME):-driver(_,NAME,_,DRIVER).
-getMakerDriver(DRIVER,MAKER):-driver(_,_,_,DRIVER).
+getMakerDriver(DRIVER,MAKER):-driver(_,_,MAKER,DRIVER).
 
 
 
-%modificadoers
+%modificadores
 setIdDriver(DRIVER,NewID,NewDRIVER):-driver(_,NA,MAK,DRIVER),driver(NewID,NA,MAK,NewDRIVER).
 setNameDriver(DRIVER,NewName,NewDRIVER):-driver(ID,_,MAK,DRIVER),driver(ID,NewName,MAK,NewDRIVER).
 setMakerDriver(DRIVER,NewMaker,NewDRIVER):-driver(ID,NA,_,DRIVER),driver(ID,NA,NewMaker,NewDRIVER).
