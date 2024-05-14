@@ -32,7 +32,7 @@ METAS PRIMARIAS
     setModelPcar: Pcar con nuevo modelo
     setTypePcar: Pcar con nuevo tipo
 */
-:- module(tdaPcar,[pcar/5,getTypePcar/2]).
+:- module(tdaPcar,[pcar/5,isPcar/1,getCapacityPcar/2,getModelPcar/2,getTypePcar/2]).
 
 
 %constructor, FUNCIONALIDAD 9
