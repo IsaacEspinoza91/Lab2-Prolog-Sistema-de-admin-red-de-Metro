@@ -5,22 +5,26 @@ DOM:
     ID: Id del metro (num)
     NAME: Nombre del metro (string)
     TRAINS: Lista de trenes (Lista TDAs train)
-    LINES: Lista de lineas (Lista TDAs line)
+    LINES: Lista de lineas (VAR, Lista TDAs line)
     DRIVERS: Lista de conductores (Lista TDAs driver)
     IdLinea: Id de una linea del metro (num)
     IdTrain: Id de un tren del metro (num)
     LINE_TRAINS: Lista de pares donde el primer elemento es la ID de una linea, 
-        y el segundo una lista de trenes asociados a esa linea ([IdLinea, Lista TDAs Train])
+        y el segundo una lista IDs de trenes asociados a esa linea ([IdLinea, Lista IDs TDAs Train])
     HoraPartida: Horario de partida de un tren en el metro en formato HH:MM:SS (string)
     StPartida: Nombre de la estacion de partida de un tren en el metro (string)
     StLlegada: Nombre de la estacion de llegada de un tren en el metro (string)
     DRIVER_TRAIN: Lista de elementos con la siguientes estructura [IdDriver,IdTrain,HoraPartida,StPartida,StLlegada]
     SUBWAY: TDA red de metro (TDA suwbay)
     LIST: Lista de elementos (Lista)
+    NameStation: Nombre de una estacion de metro (string)
+    StopTime: Tiempo de parada en una estacion (string)
+    Sections: Lista de secciones (VAR, Lista TDAs section)
 
 PREDICADOS:
     subway(ID,NAME,SUBWAY)
     isSubway(SUBWA)
+    subwayComplete(ID,NAME,TRAINS,LINES,DRIVERS,LINE_TRAINS,DRIVER_TRAIN,SUBWAY).
     getIdSubway(SUBWAY,ID)
     getNameSubway(SUBWAY,NAME)
     getTrainsSubway(SUBWAY,TRAINS)
@@ -32,6 +36,9 @@ PREDICADOS:
     listaSinElementosRepetidos(LIST)
     subwayAddLine(SUBWAY,LINES,SUBWAY)
     subwayAddDriver(SUBWAY,DRIVERS,SUBWAY)
+    subwaySetStationStopTime(SUBWAY,NameStation,StopTime,SUBWAY)
+    recorrerLinesModStopTime(LINES,NameStation,StopTime,LINES)
+    recorrerSectionsModStopTime(Sections,NameStation,StopTime,Sections)
 
 METAS PRIMARIAS:
     subway: Relacionar elementos id y nombre de un TDA subway (constructor)
@@ -45,11 +52,14 @@ METAS PRIMARIAS:
     getDriver_TrainSubway: Lista de conductor-tren de un subway
     subwayAddTrain: Añade trenes a un subway, dado que no hay trenes repetidos
     subwayAddLine: Añade lineas a un subway, dado que no hay lineas repetidas
-    subwayAddDriver: Añade conductores a un subway, dado que no hay drivers repetidos 
+    subwayAddDriver: Añade conductores a un subway, dado que no hay drivers repetidos
+    subwaySetStationStopTime: Subway con nuevo tiempo de parada en una estacion en especifico
 
 METAS SECUNDARIAS:
     listaSinElementosRepetidos: Verificar que una lista no tiene elementos repetidos
-
+    subwayComplete: Constructor de elemento TDA Subway con todos sus parametros
+    recorrerLinesModStopTime: Recorre lista de Lines donde a cada uno se aplica recorrerSectionsModStopTime para modificar el StopTime de una station en especifico
+    recorrerSectionsModStopTime: Recorre una lista de Sections, modificando el StopTime de una station en especifico
 
 */
 :-module(tdaSubway,[subway/3,subwayAddTrain/3,subwayAddLine/3,subwayAddDriver/3]).
@@ -117,7 +127,7 @@ listaSinElementosRepetidos([X|COLA]):- not(member(X,COLA)), listaSinElementosRep
 
 /* Funcionalidad 18 */
 subwayAddLine(SUBWAY,AddLINES,NewSUBWAY):- subwayComplete(_,_,_,LINES,_,_,_,SUBWAY), append(LINES,AddLINES,NewLINES),
-    listaSinElementosRepetidos(NewLINES), setLinesSubway(SUBWAY,NewLINES,NewSUBWAY).
+    listaSinElementosRepetidos(NewLINES), setLinesSubway(SUBWAY,NewLINES,NewSUBWAY). %utilizamos modificador del TDA
 
 
 
@@ -128,5 +138,37 @@ subwayAddDriver(SUBWAY,AddDRIVERS,NewSUBWAY):- subwayComplete(_,_,_,_,DRIVERS,_,
 
 
 
+
 /* Funcionalidad 20 */
 %subwayToString
+
+
+
+
+/* Funcionalidad 21 */
+subwaySetStationStopTime(SUBWAY,NameStation,StopTime,NewSubway):- subwayComplete(_,_,_,LINES,_,_,_,SUBWAY),
+    recorrerLinesModStopTime(LINES,NameStation,StopTime,NewLINES), setLinesSubway(SUBWAY,NewLINES,NewSubway). %se usa modificador
+
+
+%predicado que recorre una lista de lineas donde a cada una se aplica el predicado recorrerSectionsModStopTime para modificar el StopTime de una station en especifico
+recorrerLinesModStopTime([],_,_,[]).
+recorrerLinesModStopTime([CurrentLine|COLA],NameStation,NewStopTime,[NewLine|COLA1]):-
+    line(IDLine,NOMLine,RailTLine,SectionsLine,CurrentLine), recorrerSectionsModStopTime(SectionsLine,NameStation,NewStopTime,NewSectionsLine),
+    line(IDLine,NOMLine,RailTLine,NewSectionsLine,NewLine), recorrerLinesModStopTime(COLA,NameStation,NewStopTime,COLA1).
+
+
+%predicado que recorrer una lista de sections, compara los nombre de las estaciones (st1 y st2) y cambia el StopTime si es la estacion deseada
+recorrerSectionsModStopTime([],_,_,[]):-!.
+
+recorrerSectionsModStopTime([CurrentSection|COLA],NameStation,NewStopTime,[ModifiedSection|COLA1]):- section(ST1,ST2,DIST,COST,CurrentSection),
+    station(IDSt1,NameSt1,TypeSt1,_,ST1), NameSt1 == NameStation,
+    station(IDSt1,NameSt1,TypeSt1,NewStopTime,ModifiedStation), section(ModifiedStation,ST2,DIST,COST,ModifiedSection),
+    recorrerSectionsModStopTime(COLA,NameStation,NewStopTime,COLA1).
+
+recorrerSectionsModStopTime([CurrentSection|COLA],NameStation,NewStopTime,[ModifiedSection|COLA1]):- section(ST1,ST2,DIST,COST,CurrentSection),
+    station(IDSt2,NameSt2,TypeSt2,_,ST2), NameSt2 == NameStation, 
+    station(IDSt2,NameSt2,TypeSt2,NewStopTime,ModifiedStation), section(ST1,ModifiedStation,DIST,COST,ModifiedSection),
+    recorrerSectionsModStopTime(COLA,NameStation,NewStopTime,COLA1).
+
+recorrerSectionsModStopTime([CurrentSection|COLA],NameStation,NewStopTime,[CurrentSection|COLA1]):-
+    recorrerSectionsModStopTime(COLA,NameStation,NewStopTime,COLA1).
