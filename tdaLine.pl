@@ -76,7 +76,7 @@ METAS SECUNDARIAS:
     getLastList: selector ultimo elemento de una lista
 
 */
-:-module(tdaLine,[line/5,isLine/1,lineLength/4,lineSectionLength/6,lineAddSection/3,getRailTypeLine/2,listaVacia/1,getFirstList/2,getLastList/2]).
+:-module(tdaLine,[line/5,isLine/1,lineLength/4,lineSectionLength/6,lineAddSection/3,getIdLine/2,getRailTypeLine/2,listaVacia/1,getFirstList/2,getLastList/2]).
 :-use_module(tdaSection).
 :-use_module(tdaStation).
 
