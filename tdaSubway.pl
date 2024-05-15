@@ -20,6 +20,8 @@ DOM:
     NameStation: Nombre de una estacion de metro (string)
     StopTime: Tiempo de parada en una estacion (string)
     Sections: Lista de secciones (VAR, Lista TDAs section)
+    LINE: TDA linea (TDA Line)
+    TRAIN: TDA Tren (TDA Train)
 
 PREDICADOS:
     subway(ID,NAME,SUBWAY)
@@ -39,6 +41,12 @@ PREDICADOS:
     subwaySetStationStopTime(SUBWAY,NameStation,StopTime,SUBWAY)
     recorrerLinesModStopTime(LINES,NameStation,StopTime,LINES)
     recorrerSectionsModStopTime(Sections,NameStation,StopTime,Sections)
+    subwayAssignTraintoLine(SUBWAY,IdTrain,IdLinea,SUBWAY)
+    compatibleTrainLine(IdTrain, IdLinea, SUBWAY)
+    findTrainInTrains(TRAINS,IdTrain,TRAIN)
+    findLineInLines(LINES,IdTrain,LINE)
+    trenNoRepetidosEnLine_TrainsSubway(LINE_TRAINS,IdTrain)
+    addLine_TrainsToSubway(LINE_TRAINS,IdLinea,IdTrain,LINE_TRAINS) 
 
 METAS PRIMARIAS:
     subway: Relacionar elementos id y nombre de un TDA subway (constructor)
@@ -54,12 +62,18 @@ METAS PRIMARIAS:
     subwayAddLine: Añade lineas a un subway, dado que no hay lineas repetidas
     subwayAddDriver: Añade conductores a un subway, dado que no hay drivers repetidos
     subwaySetStationStopTime: Subway con nuevo tiempo de parada en una estacion en especifico
+    subwayAssignTraintoLine: Asignar un tren a una linea en un subway, si es que existen en el subway y son compatibles segun el tipo de riel
 
 METAS SECUNDARIAS:
     listaSinElementosRepetidos: Verificar que una lista no tiene elementos repetidos
     subwayComplete: Constructor de elemento TDA Subway con todos sus parametros
     recorrerLinesModStopTime: Recorre lista de Lines donde a cada uno se aplica recorrerSectionsModStopTime para modificar el StopTime de una station en especifico
     recorrerSectionsModStopTime: Recorre una lista de Sections, modificando el StopTime de una station en especifico
+    compatibleTrainLine: Verifica la compatibilidad de Tren y Linea, dado que tengan el mismo tipo de riel
+    findTrainInTrains: Busca un tren segun la ID en una lista de trenes, en caso de no encontrarlo su valor es false
+    findLineInLines: Busca una linea segun la ID en una lista de lineas, en caso de no encontrarlo su valor es false
+    trenNoRepetidosEnLine_TrainsSubway: Verifica que un tren segun su ID, no este repetido dentro de Line_trains de un subway
+    addLine_TrainsToSubway: añade un elemento Line_train al subway, considerando si la linea ya existia o no en el apartado de Line_trains
 
 */
 :-module(tdaSubway,[subway/3,subwayAddTrain/3,subwayAddLine/3,subwayAddDriver/3]).
@@ -177,9 +191,11 @@ recorrerSectionsModStopTime([CurrentSection|COLA],NameStation,NewStopTime,[Curre
 
 
 /* Funcionalidad 22 */
-subwayAssignTrainToLine(SUBWAY,TrainID,lineID,NewSUBWAY):- compatibleTrainLine(TrainID,LineID,SUBWAY), 
-    getLine_TrainsSubway(SUBWAY,Line_TrainsBefore), trenNoRepetidosEnLine_TrainsSubway(Line_TrainsBefore,TrainID),
-    addLine_TrainsToSubway(Line_TrainsBefore,LineID,TrainID,Line_TrainsAfter), setLine_TrainsSubway(SUBWAY,Line_TrainsAfter,NewSUBWAY).
+subwayAssignTraintoLine(SUBWAY,IDTren,IDLinea,NuevoSUBWAY):- 
+    compatibleTrainLine(IDTren, IDLinea, SUBWAY),
+    getLine_TrainsSubway(SUBWAY, LineTrainsBefore), trenNoRepetidosEnLine_TrainsSubway(LineTrainsBefore, IDTren),
+    addLine_TrainsToSubway(LineTrainsBefore, IDLinea, IDTren, LineTrainsAfter),
+    setLine_TrainsSubway(SUBWAY, LineTrainsAfter, NuevoSUBWAY).
 
 
 %verifica compatibilidad entre los rieles de una linea y un tren, mediante la ID de ambos, usa predicados auxiliares findTrainInTrains y findLineInLines
@@ -190,12 +206,12 @@ compatibleTrainLine(TrainID,LineID,SUBWAY):-
     RailTypeTrenEncontrado == RailTypeLineaEncontrada.
 
 %busca un tren segun la ID en una lista de trenes, en caso de no encontrarlo su valor es false
-findTrainInTrains([CurrentTrain|COLA],TrainID,CurrentTrain):- getIdTrain(CurrentTrain,IDTrenActual), IDTrenActual == TrainID.
+findTrainInTrains([CurrentTrain|_],TrainID,CurrentTrain):- getIdTrain(CurrentTrain,IDTrenActual), IDTrenActual == TrainID.
 findTrainInTrains([CurrentTrain|COLA],TrainID,TrainAUX):- getIdTrain(CurrentTrain,IDTrenActual), IDTrenActual \= TrainID, 
     findTrainInTrains(COLA,TrainID,TrainAUX),!.
 
 %busca una linea segun la ID en una lista de lineas, en caso de no encontrarlo su valor es false
-findLineInLines([CurrentLine|COLA],LineID,CurrentLine):- getIdLine(CurrentLine,IDLineaActual), IDLineaActual == LineID.
+findLineInLines([CurrentLine|_],LineID,CurrentLine):- getIdLine(CurrentLine,IDLineaActual), IDLineaActual == LineID.
 findLineInLines([CurrentLine|COLA],LineID,LineAUX):- getIdLine(CurrentLine,IDLineaActual), IDLineaActual \= LineID,
     findLineInLines(COLA,LineID,LineAUX),!.
 
@@ -207,10 +223,10 @@ trenNoRepetidosEnLine_TrainsSubway([CurrentLINE_TRAINS|COLA],TrainID):- getLastL
 
 
 %añade un elemento Line_train al subway, considerando si la linea ya existia o no en el apartado de Line_trains
-addLine_TrainsToSubway([],LineID,TrainID,[LineID,[TrainID]]):-!.    %caso base cuando recorre toda la lista y no existia la linea buscada, se agrega al final
+addLine_TrainsToSubway([],LineID,TrainID,[[LineID,[TrainID]]]):-!.    %caso base cuando recorre toda la lista y no existia la linea buscada, se agrega al final
 
 %caso LINE_TRAINS actual SI es el line buscado
-addLine_TrainsToSubway([CurrentLINE_TRAINS|COLA],LineID,TrainID,[LineID,ModifiedTrains|COLA]):-
+addLine_TrainsToSubway([CurrentLINE_TRAINS|COLA],LineID,TrainID,[[LineID,ModifiedTrains]|COLA]):-
     getFirstList(CurrentLINE_TRAINS,CurrentLineID), CurrentLineID == LineID,
     getLastList(CurrentLINE_TRAINS,CurrentTrains), append(CurrentTrains,[TrainID],ModifiedTrains).
 
