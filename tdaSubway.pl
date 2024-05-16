@@ -9,9 +9,11 @@ DOM:
     DRIVERS: Lista de conductores (Lista TDAs driver)
     IdLinea: Id de una linea del metro (num)
     IdTrain: Id de un tren del metro (num)
+    IdDriver: Id de un conductor del metro (num)
     LINE_TRAINS: Lista de pares donde el primer elemento es la ID de una linea, 
         y el segundo una lista IDs de trenes asociados a esa linea ([IdLinea, Lista IDs TDAs Train])
-    HoraPartida: Horario de partida de un tren en el metro en formato HH:MM:SS (string)
+    Line_Train: Par [ID de linea, Lista de Ids de trenes]
+    HoraPartida: Horario de partida de un tren en el metro en formato HH:MM:SS (string TDA Hora)
     StPartida: Nombre de la estacion de partida de un tren en el metro (string)
     StLlegada: Nombre de la estacion de llegada de un tren en el metro (string)
     DRIVER_TRAIN: Lista de elementos con la siguientes estructura [IdDriver,IdTrain,HoraPartida,StPartida,StLlegada]
@@ -46,7 +48,13 @@ PREDICADOS:
     findTrainInTrains(TRAINS,IdTrain,TRAIN)
     findLineInLines(LINES,IdTrain,LINE)
     trenNoRepetidosEnLine_TrainsSubway(LINE_TRAINS,IdTrain)
-    addLine_TrainsToSubway(LINE_TRAINS,IdLinea,IdTrain,LINE_TRAINS) 
+    addLine_TrainsToSubway(LINE_TRAINS,IdLinea,IdTrain,LINE_TRAINS)
+    subwayAssignDriverToTrain(SUBWAY, IdDriver, IdTrain, HoraPartida, StPartida, StLlegada, SUBWAY)
+    trenExisteEnSubway(SUBWAY,IdTrain)
+    driverExisteEnSubway(SUBWAY,IdDriver)
+    estacionesExistenEnLineaAsociadaAlTren(SUBWAY,IdTrain,StPartida,StLlegada)
+    stationEstaEnSections(Sections,StPartida)       ; o    stationEstaEnSections(Sections,StLlegada)
+    findLine_TrainINLine_Trains(LINE_TRAINS,IdTrain,Line_Train)
 
 METAS PRIMARIAS:
     subway: Relacionar elementos id y nombre de un TDA subway (constructor)
@@ -63,6 +71,7 @@ METAS PRIMARIAS:
     subwayAddDriver: Añade conductores a un subway, dado que no hay drivers repetidos
     subwaySetStationStopTime: Subway con nuevo tiempo de parada en una estacion en especifico
     subwayAssignTraintoLine: Asignar un tren a una linea en un subway, si es que existen en el subway y son compatibles segun el tipo de riel
+    subwayAssignDriverToTrain: Asignar un recorrido a un conductor en un tren, segun si exite el driver, el train, y si las estaciones son de la linea asignadas al tren
 
 METAS SECUNDARIAS:
     listaSinElementosRepetidos: Verificar que una lista no tiene elementos repetidos
@@ -74,6 +83,11 @@ METAS SECUNDARIAS:
     findLineInLines: Busca una linea segun la ID en una lista de lineas, en caso de no encontrarlo su valor es false
     trenNoRepetidosEnLine_TrainsSubway: Verifica que un tren segun su ID, no este repetido dentro de Line_trains de un subway
     addLine_TrainsToSubway: añade un elemento Line_train al subway, considerando si la linea ya existia o no en el apartado de Line_trains
+    trenExisteEnSubway: Verifica que un tren exista dentro de un subway segun su ID
+    driverExisteEnSubway: Verifica que un driver exista dentro de un suwbay segun su ID
+    estacionesExistenEnLineaAsociadaAlTren: Verifica que dos estaciones existan en una linea de un tren asociado segun la ID del tren
+    stationEstaEnSections: Verifica que una estacion este dentro de una lista de sectiones segun el nombre de la estacion
+    findLine_TrainINLine_Trains: Busca segun la ID de un tren, el elemento Line_Train de un Subway
 
 */
 :-module(tdaSubway,[subway/3,subwayAddTrain/3,subwayAddLine/3,subwayAddDriver/3]).
@@ -209,7 +223,6 @@ compatibleTrainLine(TrainID,LineID,SUBWAY):-
 findTrainInTrains([CurrentTrain|_],TrainID,CurrentTrain):- getIdTrain(CurrentTrain,IDTrenActual), IDTrenActual == TrainID.
 findTrainInTrains([CurrentTrain|COLA],TrainID,TrainAUX):- getIdTrain(CurrentTrain,IDTrenActual), IDTrenActual \= TrainID, 
     findTrainInTrains(COLA,TrainID,TrainAUX),!.
-
 %busca una linea segun la ID en una lista de lineas, en caso de no encontrarlo su valor es false
 findLineInLines([CurrentLine|_],LineID,CurrentLine):- getIdLine(CurrentLine,IDLineaActual), IDLineaActual == LineID.
 findLineInLines([CurrentLine|COLA],LineID,LineAUX):- getIdLine(CurrentLine,IDLineaActual), IDLineaActual \= LineID,
@@ -224,12 +237,50 @@ trenNoRepetidosEnLine_TrainsSubway([CurrentLINE_TRAINS|COLA],TrainID):- getLastL
 
 %añade un elemento Line_train al subway, considerando si la linea ya existia o no en el apartado de Line_trains
 addLine_TrainsToSubway([],LineID,TrainID,[[LineID,[TrainID]]]):-!.    %caso base cuando recorre toda la lista y no existia la linea buscada, se agrega al final
-
 %caso LINE_TRAINS actual SI es el line buscado
 addLine_TrainsToSubway([CurrentLINE_TRAINS|COLA],LineID,TrainID,[[LineID,ModifiedTrains]|COLA]):-
     getFirstList(CurrentLINE_TRAINS,CurrentLineID), CurrentLineID == LineID,
     getLastList(CurrentLINE_TRAINS,CurrentTrains), append(CurrentTrains,[TrainID],ModifiedTrains).
-
 %caso LINE_TRAINS actual NO es el line buscado, caso recursivo
 addLine_TrainsToSubway([CurrentLINE_TRAINS|COLA],LineID,TrainID,[CurrentLINE_TRAINS|COLA1]):-
     getFirstList(CurrentLINE_TRAINS,CurrentLineID), CurrentLineID \= LineID, addLine_TrainsToSubway(COLA,LineID,TrainID,COLA1).
+
+
+
+
+/* Funcionalidad 23 */
+subwayAssignDriverToTrain(SUBWAY, DriverID, TrainID, DepartureTime, DepartureStation, ArrivalStation, NewSUBWAY):-
+    trenExisteEnSubway(SUBWAY, TrainID), driverExisteEnSubway(SUBWAY, DriverID),  %verificaciones de tern y de conductor
+    estacionesExistenEnLineaAsociadaAlTren(SUBWAY, TrainID, DepartureStation, ArrivalStation),
+    getDriver_TrainSubway(SUBWAY, DRIVER_TRAINList),
+    append(DRIVER_TRAINList, [[DriverID, TrainID, DepartureTime, DepartureStation, ArrivalStation]], DRIVER_TRAINListAfter),
+    setDriver_TrainSubway(SUBWAY, DRIVER_TRAINListAfter, NewSUBWAY).
+
+
+%verifica que un tren exista dentro de un subway segun su ID
+trenExisteEnSubway(SUBWAY,TrainID):-getTrainsSubway(SUBWAY,TrenesSubway),member([TrainID,_,_,_,_],TrenesSubway).
+
+
+%verifica que un conductor exista dentro de un subway segun su ID
+driverExisteEnSubway(SUBWAY,DriverID):-getDriversSubway(SUBWAY,DriversSubway),member([DriverID,_,_],DriversSubway).
+
+
+%verifica que dos estaciones existan en una linea, tal que esta linea este asociada a un tren en especifico, mediante la ID del tren mencionado
+estacionesExistenEnLineaAsociadaAlTren(SUBWAY,TrainID,NombreSt1,NombreSt2):-
+    getLine_TrainsSubway(SUBWAY,Line_TrainsSUBWAY), findLine_TrainINLine_Trains(Line_TrainsSUBWAY, TrainID, Line_TrainEncontrado),
+    getFirstList(Line_TrainEncontrado, LineaID),  %el primer elemento del Line_Train encontrado es la ID de la linea
+    getLinesSubway(SUBWAY, LinesSubway), findLineInLines(LinesSubway, LineaID, LineEncontrada),  
+    getSectionsLine(LineEncontrada, SectionsLineEncontrada),   %se verifica que las estaciones sean efectivamente de la ID de la linea encontrada
+    stationEstaEnSections(SectionsLineEncontrada, NombreSt1), stationEstaEnSections(SectionsLineEncontrada, NombreSt2).
+
+
+%verifica que una estacion esta dentro de una lista de sections segun su nombre
+stationEstaEnSections(Sections,NombreStation):-member([[_,NombreStation,_,_],_,_,_],Sections),!. %la estacion existe como st1
+stationEstaEnSections(Sections,NombreStation):-member([_,[_,NombreStation,_,_],_,_],Sections),!. %la estacion existe como st2
+
+
+%busca segun la id de un tren, un el elemento Line_Train de un SUBWAY; si no encuentra el tren, el valor es falso
+findLine_TrainINLine_Trains([CurrentLINE_TRAINS|_],IDTrain,CurrentLINE_TRAINS):- getLastList(CurrentLINE_TRAINS, TrenesAsigancionActual),
+    member(IDTrain,TrenesAsigancionActual),!.
+findLine_TrainINLine_Trains([CurrentLINE_TRAINS|COLA],IDTrain,AUX):- getLastList(CurrentLINE_TRAINS, TrenesAsigancionActual),
+    not(member(IDTrain,TrenesAsigancionActual)), findLine_TrainINLine_Trains(COLA,IDTrain,AUX),!.
