@@ -3,7 +3,7 @@ Estructura de lista de elementos [ST1,ST2,DI,CO]
 DOM:    ST1: estacion de metro 1 (VAR TDA station)
 		ST2: estacion de metro 2 (VAR TDA station)
 		DI: Distancia entre estaciones (num)
-		CO: nombre de estacion (num >= 0)
+		CO: costo de estacion (num >= 0)
         SECTION: TDA section de metro (VAR)
 
 PREDICADOS:

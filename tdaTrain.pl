@@ -69,7 +69,7 @@ METAS SECUNDARIAS:
     carrosCentrales: verifica que los carros centrales de una linea sean del tipo ct
 
 */
-:- module(tdaTrain,[train/6,isTrain/1,getIdTrain/2,getRailTypeTrain/2,trainAddCar/4,trainRemoveCar/3,trainCapacity/2]).
+:- module(tdaTrain,[train/6,isTrain/1,getIdTrain/2,getMakerTrain/2,getRailTypeTrain/2,getSpeedTrain/2,getPCARsTrain/2,trainAddCar/4,trainRemoveCar/3,trainCapacity/2]).
 :- use_module(tdaPcar).
 :- use_module(tdaLine).
 
