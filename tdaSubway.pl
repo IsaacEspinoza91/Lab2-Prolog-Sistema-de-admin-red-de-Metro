@@ -24,6 +24,11 @@ DOM:
     Sections: Lista de secciones (VAR, Lista TDAs section)
     LINE: TDA linea (TDA Line)
     TRAIN: TDA Tren (TDA Train)
+    StringFinal: String de texto (string)
+    PCARs: Lista de carros (Lista de TDAs pcars)
+    Section: TDA seccion (TDA Section)
+    LISTA: Lista con elementos, sin sub listas (lista)
+    LISTAS: Lista de sublistas con elementos (lista de sublistas)
 
 PREDICADOS:
     subway(ID,NAME,SUBWAY)
@@ -55,6 +60,20 @@ PREDICADOS:
     estacionesExistenEnLineaAsociadaAlTren(SUBWAY,IdTrain,StPartida,StLlegada)
     stationEstaEnSections(Sections,StPartida)       ; o    stationEstaEnSections(Sections,StLlegada)
     findLine_TrainINLine_Trains(LINE_TRAINS,IdTrain,Line_Train)
+    subwayToString(SUBWAY, StringFinal)
+    trainsToString(TRAINS,StringFinal)
+    trenAString(TRAIN,StringFinal)
+    pcarsToString(PCARs,StringFinal)
+    sectionsToString(Sections,StringFinal)
+    seccionAString(Section,StringFinal)
+    linesToString(LINES,StringFinal)
+    lineaAString(LINE,StringFinal)
+    driversToString(DRIVERS,StringFinal)
+    line_TrainsToString(LINE_TRAINS,StringFinal)
+    line_TrainAString(Line_Train,StringFinal)
+    driver_TrainToString(DRIVER_TRAIN,StringFinal)
+    convertirListaDeListasAString(LISTAS, StringFinal)
+    convertirListaAString(LISTA, StringFinal)
 
 METAS PRIMARIAS:
     subway: Relacionar elementos id y nombre de un TDA subway (constructor)
@@ -72,6 +91,7 @@ METAS PRIMARIAS:
     subwaySetStationStopTime: Subway con nuevo tiempo de parada en una estacion en especifico
     subwayAssignTraintoLine: Asignar un tren a una linea en un subway, si es que existen en el subway y son compatibles segun el tipo de riel
     subwayAssignDriverToTrain: Asignar un recorrido a un conductor en un tren, segun si exite el driver, el train, y si las estaciones son de la linea asignadas al tren
+    subwayToString: Convierte todos los datos de un subway a un único string.
 
 METAS SECUNDARIAS:
     listaSinElementosRepetidos: Verificar que una lista no tiene elementos repetidos
@@ -88,9 +108,22 @@ METAS SECUNDARIAS:
     estacionesExistenEnLineaAsociadaAlTren: Verifica que dos estaciones existan en una linea de un tren asociado segun la ID del tren
     stationEstaEnSections: Verifica que una estacion este dentro de una lista de sectiones segun el nombre de la estacion
     findLine_TrainINLine_Trains: Busca segun la ID de un tren, el elemento Line_Train de un Subway
+    trainsToString: Convertir una lista de trenes a un único string
+    trenAString: Convertir un unico tren a string
+    pcarsToString: Convertir los carros de un tren a un string
+    sectionsToString: Convertir una lista de sections a string
+    seccionAString: Convertir una unica section a un string
+    linesToString: Convertir una lista de lineas a un unico string
+    lineaAString: Convertir una linea a sting
+    driversToString: Convertir lista de conductores a un string
+    line_TrainsToString: Convertir una lista de elementos Line_trains a string
+    line_TrainAString: Convertir elemento Line_train a string
+    driver_TrainToString: Convertir una lista de elementos driver_train a string
+    convertirListaDeListasAString: Convertir una lista de sublistas de elementos a un string
+    convertirListaAString: Convertir una lista SIN SUB LISTAS a un string
 
 */
-:-module(tdaSubway,[subway/3,subwayAddTrain/3,subwayAddLine/3,subwayAddDriver/3    ,getIdSubway/2, getNameSubway/2,getTrainsSubway/2,getLinesSubway/2,getDriversSubway/2,
+:-module(tdaSubway,[subway/3,subwayAddTrain/3,subwayAddLine/3,subwayAddDriver/3,getIdSubway/2,getNameSubway/2,getTrainsSubway/2,getLinesSubway/2,getDriversSubway/2,
 getDriver_TrainSubway/2,getLine_TrainsSubway/2]).
 :-use_module(tdaSection).
 :-use_module(tdaStation).
@@ -154,6 +187,7 @@ listaSinElementosRepetidos([X|COLA]):- not(member(X,COLA)), listaSinElementosRep
 
 
 
+
 /* Funcionalidad 18 */
 subwayAddLine(SUBWAY,AddLINES,NewSUBWAY):- subwayComplete(_,_,_,LINES,_,_,_,SUBWAY), append(LINES,AddLINES,NewLINES),
     listaSinElementosRepetidos(NewLINES), setLinesSubway(SUBWAY,NewLINES,NewSUBWAY). %utilizamos modificador del TDA
@@ -161,14 +195,10 @@ subwayAddLine(SUBWAY,AddLINES,NewSUBWAY):- subwayComplete(_,_,_,LINES,_,_,_,SUBW
 
 
 
+
 /* Funcionalidad 19 */
 subwayAddDriver(SUBWAY,AddDRIVERS,NewSUBWAY):- subwayComplete(_,_,_,_,DRIVERS,_,_,SUBWAY), append(DRIVERS,AddDRIVERS,NewDRIVERS),
     listaSinElementosRepetidos(NewDRIVERS), setDriversSubway(SUBWAY,NewDRIVERS,NewSUBWAY).
-
-
-
-
-
 
 
 
@@ -193,17 +223,14 @@ subwayToString(SUBWAY, StringFinal):-
     driver_TrainToString(Driv_Tr,StringDriv_Tr), string_concat(Str7, StringDriv_Tr, StringFinal).
 
 
-
 %convertir una lista de trenes a un unico string
 trainsToString(Trenes,StringFinal):- maplist(trenAString, Trenes, ListaStringTrenes),
     atomic_list_concat(ListaStringTrenes, "\n", St2), string_concat("\n\n Trenes:\n",St2,StringFinal).
-
 %convertir un unico tren a string
 trenAString(Tren,StringF):-getIdTrain(Tren,ID),getMakerTrain(Tren,Maker),getRailTypeTrain(Tren,RailT),getSpeedTrain(Tren,Speed),getPCARsTrain(Tren,Pcars),
     string_concat("   Id Tren: ",ID, St1), string_concat("   Fabricante: ", Maker, St2), string_concat("   Tipo de riel: ",RailT, St3),
     string_concat("   Rapidez: ",Speed, St4), pcarsToString(Pcars, St5),
     convertirListaAString([St1,St2,St3,St4,St5,"\n"],StringF).
-
 %convertir los carros de un tren a un string
 pcarsToString(ListaPcars,StringF):-string_concat("\n   ","Carros (Id carro, Capacidad de pasajeros, Modelo carro, Tipo carro):\n     ",StringInicio),
     convertirListaDeListasAString(ListaPcars,StringPcars), string_concat(StringInicio, StringPcars, StringF).
@@ -212,7 +239,6 @@ pcarsToString(ListaPcars,StringF):-string_concat("\n   ","Carros (Id carro, Capa
 %convertir una lista de sections a string
 sectionsToString(Sections,StringF):- maplist(seccionAString, Sections, ListaStringSections),
     atomic_list_concat(ListaStringSections, "\n",StringSections), string_concat("\n   Secciones de la linea:  estructura de estaciones->([ID, Nombre, Tipo,Tiempo de Parada])\n", StringSections, StringF).
-
 %convertir una unica section a un string
 seccionAString(Section,StringF):- getStation1Section(Section,Station1), convertirListaAString(Station1, StringStation1),
     string_concat("     Estacion 1: ", StringStation1, St1),
@@ -226,46 +252,37 @@ seccionAString(Section,StringF):- getStation1Section(Section,Station1), converti
 %convertir una lista de lineas a un unico string
 linesToString(Lineas,StringFinal):- maplist(lineaAString, Lineas, ListaStringLineas),
     atomic_list_concat(ListaStringLineas, "\n", String), string_concat("\n\n Lineas:\n",String,StringFinal).
-
-
 %convertir una linea a sting
 lineaAString(Linea,StringF):-getIdLine(Linea,ID), getNameLine(Linea,Name), getRailTypeLine(Linea,RailT),getSectionsLine(Linea,Sections),
     string_concat("   Id Linea: ",ID, St1), string_concat("\n   Nombre: ",Name,St2), string_concat("\n   Tipo de riel: ",RailT,St3),
     sectionsToString(Sections,St4),  convertirListaAString([St1,St2,St3,St4,"\n"],StringF).
 
 
-
 %convertir lista de conductores a un string
 driversToString(DriversSub,StringF):-string_concat("\n\n"," Conductores del metro: \n     ",StringInicio),
     convertirListaDeListasAString(DriversSub,StringDrivers), string_concat(StringInicio, StringDrivers, StringF).
 
+
 %convertir una lista de elementos Line_trains a string
 line_TrainsToString(ListaLine_Trains,StringFinal):-maplist(line_TrainAString, ListaLine_Trains, ListaStringLi_Tr),
     atomic_list_concat(ListaStringLi_Tr, "\n",String), string_concat("\n\n Asignaciones Linea-Tren: \n",String,StringFinal).
-
 %convertir elemento Line_train a string
 line_TrainAString([IDLinea,ListaIDsTrenes],StringF):-string_concat("   Linea con ID: ",IDLinea, St1), 
     convertirListaAString(ListaIDsTrenes,StringIDsTrenes), string_concat("         ,se asignan trenes con IDs: ",StringIDsTrenes ,St2),
     string_concat(St1,St2,StringF).
 
-%convertir una lista de elementos driver_train a string
-driver_TrainToString(Driver_Train,StringF):-string_concat("\n\n"," Asignaciones Conductor-Tren: (ID conductor, ID de tren,HoraPartida,Estacion de partida,Estacion de Llegada)\n     ",StringInicio),
-    convertirListaDeListasAString(Driver_Train,StringDriver_train), string_concat(StringInicio, StringDriver_train, StringF).
 
+%convertir una lista de elementos driver_train a string
+driver_TrainToString(Driver_Train,StringF):-string_concat("\n\n"," Asignaciones Conductor-Tren: (ID conductor, ID de tren, HoraPartida, Estacion de partida, Estacion de Llegada)\n     ",StringInicio),
+    convertirListaDeListasAString(Driver_Train,StringDriver_train), string_concat(StringInicio, StringDriver_train, StringF).
 
 
 %convertir una lista de sublistas de elementos a un string
 convertirListaDeListasAString(LISTAS, StringF):-
     maplist(convertirListaAString, LISTAS, ListaDeString1Elemento),
     atomic_list_concat(ListaDeString1Elemento, "\n     ", StringF).
-
 %convertir una lista SIN SUB LISTAS a un string
 convertirListaAString(LISTA, StringF):- atomic_list_concat(LISTA, ', ', StringF).
-
-
-
-
-
 
 
 
@@ -298,6 +315,7 @@ recorrerSectionsModStopTime([CurrentSection|COLA],NameStation,NewStopTime,[Modif
 
 recorrerSectionsModStopTime([CurrentSection|COLA],NameStation,NewStopTime,[CurrentSection|COLA1]):-
     recorrerSectionsModStopTime(COLA,NameStation,NewStopTime,COLA1).
+
 
 
 
@@ -342,6 +360,7 @@ addLine_TrainsToSubway([CurrentLINE_TRAINS|COLA],LineID,TrainID,[[LineID,Modifie
 %caso LINE_TRAINS actual NO es el line buscado, caso recursivo
 addLine_TrainsToSubway([CurrentLINE_TRAINS|COLA],LineID,TrainID,[CurrentLINE_TRAINS|COLA1]):-
     getFirstList(CurrentLINE_TRAINS,CurrentLineID), CurrentLineID \= LineID, addLine_TrainsToSubway(COLA,LineID,TrainID,COLA1).
+
 
 
 
