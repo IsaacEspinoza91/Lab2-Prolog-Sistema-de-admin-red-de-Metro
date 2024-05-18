@@ -131,6 +131,7 @@ getDriver_TrainSubway/2,getLine_TrainsSubway/2]).
 :-use_module(tdaPcar).
 :-use_module(tdaDriver).
 :-use_module(tdaTrain).
+:-use_module(tdaHora).
 
 
 %constructor, Funcionalidad 16
@@ -229,7 +230,7 @@ trainsToString(Trenes,StringFinal):- maplist(trenAString, Trenes, ListaStringTre
 %convertir un unico tren a string
 trenAString(Tren,StringF):-getIdTrain(Tren,ID),getMakerTrain(Tren,Maker),getRailTypeTrain(Tren,RailT),getSpeedTrain(Tren,Speed),getPCARsTrain(Tren,Pcars),
     string_concat("   Id Tren: ",ID, St1), string_concat("   Fabricante: ", Maker, St2), string_concat("   Tipo de riel: ",RailT, St3),
-    string_concat("   Rapidez: ",Speed, St4), pcarsToString(Pcars, St5),
+    string_concat("   Rapidez km/h: ",Speed, St4), pcarsToString(Pcars, St5),
     convertirListaAString([St1,St2,St3,St4,St5,"\n"],StringF).
 %convertir los carros de un tren a un string
 pcarsToString(ListaPcars,StringF):-string_concat("\n   ","Carros (Id carro, Capacidad de pasajeros, Modelo carro, Tipo carro):\n     ",StringInicio),
@@ -320,6 +321,7 @@ recorrerSectionsModStopTime([CurrentSection|COLA],NameStation,NewStopTime,[Curre
 
 
 
+
 /* Funcionalidad 22 */
 subwayAssignTraintoLine(SUBWAY,IDTren,IDLinea,NuevoSUBWAY):- 
     compatibleTrainLine(IDTren, IDLinea, SUBWAY),
@@ -365,6 +367,7 @@ addLine_TrainsToSubway([CurrentLINE_TRAINS|COLA],LineID,TrainID,[CurrentLINE_TRA
 
 
 
+
 /* Funcionalidad 23 */
 subwayAssignDriverToTrain(SUBWAY, DriverID, TrainID, DepartureTime, DepartureStation, ArrivalStation, NewSUBWAY):-
     trenExisteEnSubway(SUBWAY, TrainID), driverExisteEnSubway(SUBWAY, DriverID),  %verificaciones de tern y de conductor
@@ -401,3 +404,70 @@ findLine_TrainINLine_Trains([CurrentLINE_TRAINS|_],IDTrain,CurrentLINE_TRAINS):-
     member(IDTrain,TrenesAsigancionActual),!.
 findLine_TrainINLine_Trains([CurrentLINE_TRAINS|COLA],IDTrain,AUX):- getLastList(CurrentLINE_TRAINS, TrenesAsigancionActual),
     not(member(IDTrain,TrenesAsigancionActual)), findLine_TrainINLine_Trains(COLA,IDTrain,AUX),!.
+
+
+
+
+
+
+/* Funcionalidad 24*/
+%caso sentido normal de recorrido
+whereIsTrain(SUBWAY,TrainID,TiempoPreguntado,NombreStationOut):-
+    getDriver_TrainSubway(SUBWAY,Drivers_Trains),findEleDriver_TrainByTrainID(Drivers_Trains,TrainID,TiempoPartida,EstacionInicio,EstacionFin),
+    diferenciaDeHorasEnSS(TiempoPartida,TiempoPreguntado,DiferenciaTiemposEnSS),          %obtener diferencia de tiempos en Segundos
+    getTrainsSubway(SUBWAY,TrenesSUB), findTrainInTrains(TrenesSUB,TrainID,Tren), getSpeedTrain(Tren,RapidezTrenKmH),              %obtener rapidez del tren
+    getLine_TrainsSubway(SUBWAY,Line_TrainsSUBWAY),
+    findLine_TrainINLine_Trains(Line_TrainsSUBWAY, TrainID, Line_TrainEncontrado), getFirstList(Line_TrainEncontrado, LineID),%encontrar id linea segun id tren en line_trains
+    getLinesSubway(SUBWAY,Lineas), findLineInLines(Lineas,LineID,LineaEncontrada),          %obtener linea buscada dentro del subway
+    getSectionsLine(LineaEncontrada,ListaSections),
+    getSubListaSections(ListaSections,EstacionInicio,EstacionFin,SectionsDelTramoDelRecorrido), %retorna la sub lista entre estaciones, da igual cual sale primero. 
+    sentidoNormalDeRecorrido(SectionsDelTramoDelRecorrido, EstacionInicio),    %condicion de que es sentido normal de recorrido, en que caso de que falle, se intenta con sentido inverso en otro predicado
+    recorrerSectionsHastaLlegar(SectionsDelTramoDelRecorrido, RapidezTrenKmH, DiferenciaTiemposEnSS, NombreStationOut),!.
+
+%caso sentido inverso de recorrido
+whereIsTrain(SUBWAY,TrainID,TiempoPreguntado,NombreStationOut):-
+    getDriver_TrainSubway(SUBWAY,Drivers_Trains),findEleDriver_TrainByTrainID(Drivers_Trains,TrainID,TiempoPartida,EstacionInicio,EstacionFin),
+    diferenciaDeHorasEnSS(TiempoPartida,TiempoPreguntado,DiferenciaTiemposEnSS),          %obtener diferencia de tiempos en Segundos
+    getTrainsSubway(SUBWAY,TrenesSUB), findTrainInTrains(TrenesSUB,TrainID,Tren), getSpeedTrain(Tren,RapidezTrenKmH),              %obtener rapidez del tren
+    getLine_TrainsSubway(SUBWAY,Line_TrainsSUBWAY),
+    findLine_TrainINLine_Trains(Line_TrainsSUBWAY, TrainID, Line_TrainEncontrado), getFirstList(Line_TrainEncontrado, LineID),%encontrar id linea segun id tren en line_trains
+    getLinesSubway(SUBWAY,Lineas), findLineInLines(Lineas,LineID,LineaEncontrada),          %obtener linea buscada dentro del subway
+    getSectionsLine(LineaEncontrada,ListaSections),
+    getSubListaSections(ListaSections,EstacionInicio,EstacionFin,SectionsDelTramoDelRecorrido),
+    recorridoInversoDeSections(SectionsDelTramoDelRecorrido, SectionsParaRecorridoInverso),   %como sabemos que es SENTIDO INVERSO, se invierte las secciones y las estaciones
+    recorrerSectionsHastaLlegar(SectionsParaRecorridoInverso, RapidezTrenKmH, DiferenciaTiemposEnSS, NombreStationOut).
+
+
+%verifica que una lista de secciones tenga sentido normal de recorrido
+sentidoNormalDeRecorrido([[NombreST1,_,_,_]|_],NombreST1).
+
+
+%encuentra elementos tiempo partida, estacion partida y estacion llegada dentro de una lista de Driver_trains en un 1ERA ocurrencia. En caso de no encontrar, el valor es false
+findEleDriver_TrainByTrainID([[_,TrainID,TiempoPartida,EstacionPartida,EstacionLlegada]|_],TrainID,TiempoPartida,EstacionPartida,EstacionLlegada):-!. %caso base
+findEleDriver_TrainByTrainID([[_,ActTrainID,_,_,_]|COLA],TrainID,TiempoPartida,EstacionPartida,EstacionLlegada):-
+    ActTrainID \= TrainID, findEleDriver_TrainByTrainID(COLA,TrainID,TiempoPartida,EstacionPartida,EstacionLlegada). %caso recursivo
+
+
+%invertir las secciones de una lista, talque ahora la estacion1 este en el lugar de la estacion 2 (y viceversa) de cada section
+recorridoInversoDeSections(Secciones,SeccionesSALIDA):-reverse(Secciones,SeccionesAUX),invertirStationsEnSections(SeccionesAUX,SeccionesSALIDA).
+%invertir las estaciones de lugar en un lista de sections
+invertirStationsEnSections([],[]).
+invertirStationsEnSections([[ST1,ST2,DIS,COST]|COLA],[[ST2,ST1,DIS,COST]|COLA1]):-invertirStationsEnSections(COLA,COLA1).
+
+
+%CASO Especial en donde la primera seccion ya supera el tiempo limite. Se retorna el nombre de Station1
+recorrerSectionsHastaLlegar([[[_,NombreStLimite,_,TiempoParadaInicialSt1],_,DistanciaSection,_]|+],RapidezTrenKmH,TiempoLimite,NombreStLimite):-
+    TiempoSection is ((DistanciaSection/RapidezTrenKmH)*3600), TiempoACUM is (TiempoSection+TiempoParadaInicialSt1),
+    TiempoACUM > TiempoLimite.
+%Caso de encapsulacion para hacer la recursion
+recorrerSectionsHastaLlegar([[[_,_,_,TiempoParadaInicialSt1],[_,_,_,TiempoParadaInicialSt2],DistanciaSection,_]|COLA],RapidezTrenKmH,TiempoLimite,NombreStLimite):- 
+    TiempoSection1 is ((DistanciaSection/RapidezTrenKmH)*3600), TiempoACUM is (TiempoSection1+TiempoParadaInicialSt1+TiempoParadaInicialSt2),
+    recorrerSectionsHastaLlegar(COLA, RapidezTrenKmH, TiempoACUM, TiempoLimite,NombreStLimite),!.
+%Casos base
+recorrerSectionsHastaLlegar([[_,[_,NombreStation,_,_],_,_]|[]],_,_,_,NombreStation). % caso base en que se acabo el recorrido del tren y todavia no se superaba el tiempo limite preguntado
+recorrerSectionsHastaLlegar([[[_,NombreStation,_,_],_,_,_]|_],_,_,_,NombreStation). %caso base
+%caso recursivo
+recorrerSectionsHastaLlegar([[_,[_,_,_,TiempoParadaSt2],DistanciaSection,_]|COLA], RapidezTrenKmH, TiempoACUM, TiempoLimite, NombreST):-
+    TiempoSection is ((DistanciaSection/RapidezTrenKmH)*3600),
+    TiempoActualACUM is (TiempoACUM+TiempoParadaSt2+TiempoSection), TiempoActualACUM =< TiempoLimite,
+    recorrerSectionsHastaLlegar(COLA, RapidezTrenKmH, TiempoActualACUM, TiempoLimite, NombreST).
