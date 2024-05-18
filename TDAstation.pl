@@ -36,7 +36,9 @@ METAS PRIMARIAS:
 %constructor
 /* Funcionalidad 2
 Grado de Implementacion: 1
-Crea elemento TDA station, estacion de metro*/
+Crea elemento TDA station, estacion de metro
+DOM: ID (num) X Nombre Estacion (string) X Tipo estacion (string) X Tiempo de parada (num) X (VAR)
+Recorrido: VAR TDA station (Lista de elementos)*/
 station(IDST,NombreST,TipoST,StopTimeST,[IDST,NombreST,TipoST,StopTimeST]).
 
 %pertenecia

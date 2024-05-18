@@ -36,7 +36,9 @@ METAS PRIMARIAS:
 %constructor
 /* Funcionalidad 3
 Grado de Implementacion: 1
-Crea elemento TDA section, secciones entre dos estaciones de metro*/
+Crea elemento TDA section, secciones entre dos estaciones de metro
+DOM: Estacion 1 (TDA station) X Estacion 2 (TDA station) X Distancia entre estaciones (num) X Costo (num) X VAR
+Recorido: VAR TDA section (Lista de elementos)*/
 section(Station1,Station2,Distancia,Costo,[Station1,Station2,Distancia,Costo]).
 
 %pertenecia

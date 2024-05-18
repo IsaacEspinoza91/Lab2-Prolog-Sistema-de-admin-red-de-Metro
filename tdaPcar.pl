@@ -38,7 +38,9 @@ METAS PRIMARIAS
 %constructor
 /* Funcionalidad 9
 Grado de Implementacion: 1
-Crea elemento TDA pcar, carro de un tren*/
+Crea elemento TDA pcar, carro de un tren
+DOM: Id (num) X Capacidad del carro (num) X modelo del carro (string) X tipo del carro (atomo) X VAR
+Recorrido: VAR TDA pcar (lista de elementos)*/
 pcar(ID,Capacidad,Modelo,Tipo,[ID,Capacidad,Modelo,Tipo]).
 
 

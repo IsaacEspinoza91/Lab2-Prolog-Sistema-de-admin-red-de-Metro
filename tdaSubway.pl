@@ -144,8 +144,9 @@ METAS SECUNDARIAS:
     recorrerSectionsYGuardarNombreStations2: Entrega una lista con los todos nombres de Station2 de una lista de secciones hasta una estacion determinada
 
 */
-:-module(tdaSubway,[subway/3,subwayAddTrain/3,subwayAddLine/3,subwayAddDriver/3,getIdSubway/2,getNameSubway/2,getTrainsSubway/2,getLinesSubway/2,getDriversSubway/2,
-getDriver_TrainSubway/2,getLine_TrainsSubway/2]).
+:-module(tdaSubway,[subway/3,subwayAddTrain/3,subwayAddLine/3,subwayAddDriver/3,getIdSubway/2,getNameSubway/2,getTrainsSubway/2,getLinesSubway/2,
+getDriversSubway/2,getDriver_TrainSubway/2,getLine_TrainsSubway/2,subwayToString/2,subwaySetStationStopTime/4,subwayAssignTraintoLine/4,
+subwayAssignDriverToTrain/7,whereIsTrain/4,subwayTrainPath/4]).
 :-use_module(tdaSection).
 :-use_module(tdaStation).
 :-use_module(tdaLine).
@@ -158,7 +159,9 @@ getDriver_TrainSubway/2,getLine_TrainsSubway/2]).
 %constructor
 /* Funcionalidad 16
 Grado de Implementacion: 1
-Crea elemento TDA subway, una red de metro*/
+Crea elemento TDA subway, una red de metro
+DOM: ID (num) X nombre metro (string) X VAR
+Recorrido: VAR TDA subway (lista de elementos)*/
 subway(ID,NAME,[ID,NAME,[],[],[],[],[]]).
 subwayComplete(ID,NAME,TRAINS,LINES,DRIVERS,LINE_TRAINS,DRIVER_TRAIN,[ID,NAME,TRAINS,LINES,DRIVERS,LINE_TRAINS,DRIVER_TRAIN]).
 
@@ -203,7 +206,9 @@ setDriver_TrainSubway(SUBWAY,NewDRIVER_TRAIN,NewSUBWAY):-subwayComplete(ID,NAME,
 
 /* Funcionalidad 17
 Grado de Implementacion: 1
-Añadir trenes a una red de metro*/
+Añadir trenes a una red de metro
+DOM: metro (TDA subway) X trenes (lista TDAs train) X VAR
+Recorrido: VAR metro (TDA Subway)*/
 subwayAddTrain(SUBWAY,AddTRAINS,NewSUBWAY):- subwayComplete(_,_,TRAINS,_,_,_,_,SUBWAY), append(TRAINS,AddTRAINS,NewTRAINS),
     listaSinElementosRepetidos(NewTRAINS), setTrainsSubway(SUBWAY,NewTRAINS,NewSUBWAY).     %no hay trenes repetidos
 
@@ -217,7 +222,9 @@ listaSinElementosRepetidos([X|COLA]):- not(member(X,COLA)), listaSinElementosRep
 
 /* Funcionalidad 18
 Grado de Implementacion: 1
-Añadir lineas a una red de metro*/
+Añadir lineas a una red de metro
+DOM: metro (TDA subway) X Lineas (lista de TDAs line) X VAR
+Recorrido: VAR metro (TDA subway)*/
 subwayAddLine(SUBWAY,AddLINES,NewSUBWAY):- subwayComplete(_,_,_,LINES,_,_,_,SUBWAY), append(LINES,AddLINES,NewLINES),
     listaSinElementosRepetidos(NewLINES), setLinesSubway(SUBWAY,NewLINES,NewSUBWAY). %utilizamos modificador del TDA
 
@@ -226,7 +233,9 @@ subwayAddLine(SUBWAY,AddLINES,NewSUBWAY):- subwayComplete(_,_,_,LINES,_,_,_,SUBW
 
 /* Funcionalidad 19
 Grado de Implementacion: 1
-Añadir conductores a una red de metro*/
+Añadir conductores a una red de metro
+DOM: metro (TDA subway) X conductores (lista de TDAs driver) X VAR
+Recorrido: VAR metro (TDA subway)*/
 subwayAddDriver(SUBWAY,AddDRIVERS,NewSUBWAY):- subwayComplete(_,_,_,_,DRIVERS,_,_,SUBWAY), append(DRIVERS,AddDRIVERS,NewDRIVERS),
     listaSinElementosRepetidos(NewDRIVERS), setDriversSubway(SUBWAY,NewDRIVERS,NewSUBWAY).
 
@@ -236,7 +245,9 @@ subwayAddDriver(SUBWAY,AddDRIVERS,NewSUBWAY):- subwayComplete(_,_,_,_,DRIVERS,_,
 
 /* Funcionalidad 20
 Grado de Implementacion: 1
-Expresa TODOS los datos de un subway dentro un string. Entrega todas las estaciones con todos sus datos, todas las lineas, los trenes con sus carros, los recorridos, las asignaciones de train-line y driver-train*/
+Expresa TODOS los datos de un subway dentro un string. Entrega todas las estaciones con todos sus datos, todas las lineas, los trenes con sus carros, los recorridos, las asignaciones de train-line y driver-train
+DOM: metro (TDA Subway) X VAR
+Recorrido: VAR (string)*/
 subwayToString(SUBWAY, StringFinal):-
     getIdSubway(SUBWAY,IDSub), 
     string_concat("\nDatos del sistema de metro\n ID: ",IDSub, Str1),
@@ -314,7 +325,7 @@ convertirListaDeListasAString(LISTAS, StringF):-
     maplist(convertirListaAString, LISTAS, ListaDeString1Elemento),
     atomic_list_concat(ListaDeString1Elemento, "\n     ", StringF).
 %convertir una lista SIN SUB LISTAS a un string
-convertirListaAString(LISTA, StringF):- atomic_list_concat(LISTA, ', ', StringF).
+convertirListaAString(LISTAact, StringF):- atomic_list_concat(LISTAact, ', ', StringF).
 
 
 
@@ -322,7 +333,9 @@ convertirListaAString(LISTA, StringF):- atomic_list_concat(LISTA, ', ', StringF)
 
 /* Funcionalidad 21
 Grado de Implementacion: 1
-Modifica el tiempo de parada de una estacion especifica dentro de un suwbay*/
+Modifica el tiempo de parada de una estacion especifica dentro de un suwbay
+DOM: metro (TDA subway) X nombre estacion (string) X tiempo de parada segundos (num) X VAR
+Recorrido: VAR metro (Tda subway)*/
 subwaySetStationStopTime(SUBWAY,NameStation,StopTime,NewSubway):- subwayComplete(_,_,_,LINES,_,_,_,SUBWAY),
     recorrerLinesModStopTime(LINES,NameStation,StopTime,NewLINES), setLinesSubway(SUBWAY,NewLINES,NewSubway). %se usa modificador
 
@@ -357,7 +370,9 @@ recorrerSectionsModStopTime([CurrentSection|COLA],NameStation,NewStopTime,[Curre
 
 /* Funcionalidad 22
 Grado de Implementacion: 1
-Asigna un tren a un linea determina verificando su compatibilidad de tipo de riel*/
+Asigna un tren a un linea determina verificando su compatibilidad de tipo de riel
+DOM: Metro (TDA subway) X id del tren (num) X id d ela linea (num) VAR
+Recorrido: VAR metro (TDA subway)*/
 subwayAssignTraintoLine(SUBWAY,IDTren,IDLinea,NuevoSUBWAY):- 
     compatibleTrainLine(IDTren, IDLinea, SUBWAY),
     getLine_TrainsSubway(SUBWAY, LineTrainsBefore), trenNoRepetidosEnLine_TrainsSubway(LineTrainsBefore, IDTren),
@@ -405,7 +420,9 @@ addLine_TrainsToSubway([CurrentLINE_TRAINS|COLA],LineID,TrainID,[CurrentLINE_TRA
 
 /* Funcionalidad 23
 Grado de Implementacion: 1
-Asigna un conductor a un tren en un horario de salida terminado considerando estacion de partida y de llegada. Segun se complan condiciones de existencia y compatibilida de tren, el conductor y las estaciones con la linea*/
+Asigna un conductor a un tren en un horario de salida terminado considerando estacion de partida y de llegada. Segun se complan condiciones de existencia y compatibilida de tren, el conductor y las estaciones con la linea
+DOM: metro (TDA subway) X id conductor (num) X id tren (num) X hora partida en fomato HH:MM:SS (TDA Hora) X nombre estacion inicio (string) X nombre estacion llegada (string) X VAR
+Recorrido: VAR metro (TDA subway)*/
 subwayAssignDriverToTrain(SUBWAY, DriverID, TrainID, DepartureTime, DepartureStation, ArrivalStation, NewSUBWAY):-
     trenExisteEnSubway(SUBWAY, TrainID), driverExisteEnSubway(SUBWAY, DriverID),  %verificaciones de tern y de conductor
     estacionesExistenEnLineaAsociadaAlTren(SUBWAY, TrainID, DepartureStation, ArrivalStation),
@@ -449,7 +466,9 @@ findLine_TrainINLine_Trains([CurrentLINE_TRAINS|COLA],IDTrain,AUX):- getLastList
 
 /* Funcionalidad 24
 Grado de Implementacion: 1
-Determina en que estacion se encuentra un tren en una hora del dia a partir de un recorrido determinado del tren*/
+Determina en que estacion se encuentra un tren en una hora del dia a partir de un recorrido determinado del tren
+DOM: Metro (TDA subway) X id de tren (num) X Hora (TDA hora) X VAR
+Recorrido: VAR nombre estacion (string)*/
 %caso sentido normal de recorrido
 whereIsTrain(SUBWAY,TrainID,TiempoPreguntado,NombreStationOut):-
     getDriver_TrainSubway(SUBWAY,Drivers_Trains),findEleDriver_TrainByTrainID(Drivers_Trains,TrainID,TiempoPartida,EstacionInicio,EstacionFin),
@@ -518,7 +537,9 @@ recorrerSectionsHastaLlegar([[[_,NombreStation,_,_],_,_,_]|_],_,_,_,NombreStatio
 
 /* Funcionalidad 25
 Grado de Implementacion: 1
-Creacion de una lista con los nombres de las estaciones del recorrido de un tren hasta una determinada hora del dia*/
+Creacion de una lista con los nombres de las estaciones del recorrido de un tren hasta una determinada hora del dia
+DOM: Metro (TDA subway) X id de tren (num) X Hora (TDA Hora) X VAR
+Recorrido: VAR lista de nombres de estaciones (lista de strings)*/
 %caso sentido normal del recorrido
 subwayTrainPath(SUBWAY,TrainID,HoraPreguntada,ListaEstaciones):-
     whereIsTrain(SUBWAY,TrainID,HoraPreguntada,NombreEstacionLimite),

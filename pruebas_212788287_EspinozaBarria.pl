@@ -1,0 +1,485 @@
+
+
+/* Ejemplo Funcionalidad 2*/
+%Estaciones L1 metro santiago
+station( 0, "San Pablo",           "t", 90, ST0),
+station( 1, "Neptuno",             "r", 45, ST1),
+station( 2, "Pajaritos",           "c", 45, ST2),
+station( 3, "Las Rejas",           "r", 45, ST3),
+station( 4, "Ecuador",             "r", 60, ST4),
+station( 5, "San Alberto Hurtado", "r", 40, ST5),
+station( 6, "USACH",               "c", 40, ST6),
+station( 7, "Estacion Central",    "c", 50, ST7),
+station( 8, "UnionLatinoamericana","r", 30, ST8),
+station( 9, "Republica",           "r", 40, ST9),
+station( 10,"Los Heroes",          "c", 60, ST10),
+station( 11,"La Moneda",           "r", 40, ST11),
+station( 12,"Universidad de Chile","c", 90, ST12),
+station( 13,"Santa Lucia",         "r", 40, ST13),
+station( 14,"Universidad Catolica","c", 60, ST14),
+station( 15,"Baquedano",           "r", 40, ST15),
+station( 16,"Salvador",            "r", 30, ST16),
+station( 17,"Manuel Montt",        "r", 30, ST17),
+station( 18,"Pedro de Valdivia",   "r", 30, ST18),
+station( 19,"Los Leones",          "c", 60, ST19),
+station( 20,"Tobalada",            "r", 45, ST20),
+station( 21,"El Golf",             "r", 30, ST21),
+station( 22,"Alcantara",           "r", 30, ST22),
+station( 23,"Escuela Militar",     "r", 30, ST23),
+station( 24,"Manquehue",           "r", 30, ST24),
+station( 25,"Hernando de Magallanes","r",30, ST25),
+station( 26,"Los Dominicos",       "t", 90, ST26),
+station( 27,"Cochera",             "m", 3600, ST27),
+
+
+%Estaciones L2 circular metro santiago
+station( 28, "El Llano",           "r",  60, ST28),
+station( 29, "Franklin",           "r",  50, ST29),
+station( 30, "Rondizzoni",         "r",  55, ST30),
+station( 31, "Parque OHiggins",    "r",  65, ST31),
+station( 32, "Toesca",             "r",  65, ST32),
+station( 33, "Santa Ana",          "c",  65, ST33),
+station( 34, "Puente Cal y Canto", "c",  65, ST34),
+
+
+%Estaciones L3 metro santiago
+station( 35, "Plaza Quilicura",    "t",  90, ST35),
+station( 36, "Lo Cruzat",          "r",  45, ST36),
+station( 37, "Ferrocarril",        "r",  45, ST37),
+station( 38, "Los Libertadores",   "c",  60, ST38),
+station( 39, "Cardenal Caro",      "r",  45, ST39),
+station( 40, "Vivaceta",           "r",  45, ST40),
+station( 41, "Conchali",           "r",  45, ST41),
+station( 42, "Plaza Chacabuco",    "r",  45, ST42),
+station( 43, "Hospitales",         "r",  45, ST43),
+station( 44, "Puente Cal y Canto", "c",  65, ST44),
+station( 45, "Plaza de Armas",     "c",  60, ST45),
+station( 46, "Universidad de Chile", "c",  90, ST46),
+station( 47, "Parque Almagro",     "r",  45, ST47),
+station( 48, "Matta",              "t",  90, ST48),
+
+
+
+
+%Estaciones L1 metro Buenos Aires
+station( 49, "Plaza de Mayo",       "t", 90, ST49),
+station( 50, "Peru",                "r", 40, ST50),
+station( 51, "Piedras",             "r", 40, ST51),
+station( 52, "Avenida de Mayo",     "r", 40, ST52),
+station( 53, "Lima",                "r", 40, ST53),
+station( 54, "Saenz Peña",          "r", 45, ST54),
+station( 55, "Congreso",            "r", 40, ST55),
+station( 56, "Pasco",               "r", 35, ST56),
+station( 57, "Alberti",             "r", 40, ST57),
+station( 58, "Plaza Miserere",      "c", 90, ST58),
+station( 59, "Loria",               "r", 45, ST59),
+station( 60, "Castro Barros",       "r", 45, ST60),
+station( 61, "Rio de Janeiro",      "r", 50, ST61),
+station( 62, "Acoyte",              "r", 40, ST62),
+station( 63, "Primera Junta",       "r", 40, ST63),
+station( 64, "Puan",                "r", 45, ST64),
+station( 65, "Carabobo",            "r", 45, ST65),
+station( 66, "San Jose de Flores",  "r", 40, ST66),
+station( 67, "San Pedrito",         "t", 90, ST67),
+
+
+%Estaciones L6 metro Buenos Aires
+station( 68, "Hospitales",          "t", 90, ST68),
+station( 69, "Caseros",             "r", 50, ST69),
+station( 70, "Inclan Mezquita Al Ahmad", "r", 40, ST70),
+station( 71, "Humberto I",          "c", 90, ST71),
+station( 72, "Venezuela",           "r", 45, ST72),
+station( 73, "Plaza Miserere",      "c", 90, ST73),
+station( 74, "Corrientes",          "c", 90, ST74),
+station( 75, "Cordoba",             "r", 50, ST75),
+station( 76, "Pueyrredon",          "c", 90, ST76),
+station( 77, "Las Heras",           "r", 45, ST77),
+station( 78, "Facultad de Derecho Julieta Lanteri", "t", 90, ST78),
+
+
+
+
+%Estaciones L1 metro Estadio Primera Division Chile
+station( 79, "Estadio Monumental David Arellano -  Colo Colo", "t", 180, ST79),
+station( 80, "Estadio Santa Laura - Union Española", "c",   90, ST80),
+station( 81, "Estadio San Carlos de Apoquindo - U Catolica", "r", 40, ST81),
+station( 82, "Estadio Bicentenario La Florida - Audax Italiano", "r", 60, ST82),
+station( 83, "Estadio Municipal La Cisterna - Palestino", "c", 40, ST83),
+station( 84, "Estadio Nacional Julio Martinez - Seleccion Chilena", "r", 90, ST84),
+station( 85, "Estadio Nicolas Chahuan - Union La Calera", "r", 40, ST85),
+station( 86, "Estadio Sau Salito - Everton", "t", 50, ST86),
+station( 87, "Estadio El Teniente - OHiggins", "r", 80, ST87),
+station( 88, "Estadio Nelson Oyarzun - Nublense", "r", 50, ST88),
+station( 89, "Estadio CAP - Huachipato", "t", 60, ST89),
+station( 90, "Estadio Zorros del Desierto - Cobreloa", "r", 40, ST90),
+station( 91, "Estadio Tierra de Campeones - Iquique", "t", 50, ST91),
+station( 92, "Estadio El Cobre - Cobresal", "r", 25, ST92),
+station( 93, "Estadio Luis Valenzuela - Copiapo", "r", 30, ST93),
+station( 94, "Estadio Francisco Sanchez Rumoroso - Coquimbo Unido", "r", 40, ST94),
+
+
+
+
+
+
+/* Ejemplo Funcionalidad 2*/
+%Tramos L1 Metro Santiago
+section(ST0, ST1, 2.5, 55, S1),
+section(ST1, ST2, 1.5, 30, S2),
+section(ST2, ST3, 3, 45, S3),
+section(ST3, ST4, 2, 40, S4),
+section(ST4, ST5, 2.5, 50, S5),
+section(ST5, ST6, 1, 20, S6),
+section(ST6, ST7, 1.5, 25, S7),
+section(ST7, ST8, 2, 30, S8),
+section(ST8, ST9, 2.3, 20, S9),
+section(ST9, ST10, 3.5, 25, S10),
+section(ST10, ST11, 1, 20, S11),
+section(ST11, ST12, 1.5, 25, S12),
+section(ST12, ST13, 1.8, 20, S13),
+section(ST13, ST14, 1.5, 25, S14),
+section(ST14, ST15, 2, 30, S15),
+section(ST15, ST16, 2.5 , 20, S16),
+section(ST16, ST17, 1.5, 25, S17),
+section(ST17, ST18, 1, 20, S18),
+section(ST18, ST19, 1.3, 25, S19),
+section(ST19, ST20, 2, 30, S20),
+section(ST20, ST21, 3, 20, S21),
+section(ST21, ST22, 1.5, 25, S22),
+section(ST22, ST23, 2.7, 30, S23),
+section(ST23, ST24, 1, 20, S24),
+section(ST24, ST25, 1.5, 25, S25),
+section(ST25, ST26, 2, 30, S26),
+section(ST26, ST27, 5, 0, S27),
+
+
+%Tramos L2 Metro Santiago
+section(ST28, ST29, 2.5, 35, S28),
+section(ST29, ST30, 2,   30, S29),
+section(ST30, ST31, 1.5, 25, S30),
+section(ST31, ST32, 2,   30, S31),
+section(ST32, ST33, 2.5, 35, S32),
+section(ST33, ST34, 3.0, 40, S33),
+section(ST34, ST28, 5,   50, S34),
+
+
+%Tramos L3 Metro Santiago
+section(ST35, ST36, 2.8, 45, S35),
+section(ST36, ST37, 1.6, 40, S36),
+section(ST37, ST38, 3.6, 40, S37),
+section(ST38, ST39, 1.9, 30, S38),
+section(ST39, ST40, 2.8, 35, S39),
+section(ST40, ST41, 1.5, 30, S40),
+section(ST41, ST42, 4, 35, S41),
+section(ST42, ST43, 3.5, 30, S42),
+section(ST43, ST44, 2, 40, S43),
+section(ST44, ST45, 1.6, 35, S44),
+section(ST45, ST46, 2.8, 45, S45),
+section(ST46, ST47, 3.5, 35, S46),
+section(ST47, ST48, 2, 40, S47),
+
+
+
+
+%Tramos L1 Metro Buenos Aires
+section(ST49, ST50, 2.5, 55, S49),
+section(ST50, ST51, 1.9, 30, S50),
+section(ST51, ST52, 2.7, 35, S51),
+section(ST52, ST53, 4.5, 30, S52),
+section(ST53, ST54, 2.4, 40, S53),
+section(ST54, ST55, 1.5, 30, S54),
+section(ST55, ST56, 2.3, 35, S55),
+section(ST56, ST57, 4.3, 30, S56),
+section(ST57, ST58, 2, 40, S57),
+section(ST58, ST59, 1.5, 35, S58),
+section(ST59, ST60, 3,   40, S59),
+section(ST60, ST61, 1.5, 30, S60),
+section(ST61, ST62, 2,   35, S61),
+section(ST62, ST63, 3.5, 30, S62),
+section(ST63, ST64, 5,   40, S63),
+section(ST64, ST65, 2.5, 35, S64),
+section(ST65, ST66, 2.8, 40, S65),
+section(ST66, ST67, 1.5, 30, S66),
+
+
+%Tramo L6 Metro Buenos Aires
+section(ST68, ST69, 2.5, 55, S68),
+section(ST69, ST70, 1.4, 30, S69),
+section(ST70, ST71, 2, 40, S70),
+section(ST71, ST72, 4, 35, S71),
+section(ST72, ST73, 2.6, 45, S72),
+section(ST73, ST74, 1.2, 30, S73),
+section(ST74, ST75, 3, 40, S74),
+section(ST75, ST76, 4, 35, S75),
+section(ST76, ST77, 2, 45, S76),
+section(ST77, ST78, 1.3, 30, S77),
+
+
+
+
+%Tramos L1 Metro Primera Division Chile
+section(ST79, ST80, 12.37, 60, S79),
+section(ST80, ST81, 14.63, 50, S80),
+section(ST81, ST82, 17.56, 40, S81),
+section(ST82, ST83, 8.95, 45, S82),
+section(ST83, ST84, 8.45, 55, S83),
+section(ST84, ST85, 93.47, 35, S84),
+section(ST85, ST86, 40.45, 50, S85),
+
+
+%Tramos L2 Metro Primera Division Chile
+section(ST83, ST87, 73.27, 60, S86),
+section(ST87, ST88, 298.42, 45, S87),
+section(ST88, ST89, 90.5, 50, S88),
+
+
+%Tramos L3 Metro Primera Division Chile
+section(ST91, ST90, 276.73, 45, S90),
+section(ST90, ST92, 427.68, 300, S91),
+section(ST92, ST93, 142.67, 35, S92),
+section(ST93, ST94, 304.5, 40, S93),
+section(ST94, ST80, 387.81, 90, S94),
+
+
+
+
+/* Ejemplo Funcionalidad 4*/
+%Lineas Metro santiago
+line( 1, "Linea 1", "100 R.E.", [S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14, S15, S16, S17, S18, S19, S20, S21, S22, S23, S24, S25, S26, S27], L1_MSantiago),
+line( 2, "Linea 2", "UIC 60 ASCE", [], L2_MSantiago),   %despues hay que agregar secciones desde la S28 a la S34
+line( 3, "Linea 3", "UIC 60 ASCE", [S35, S36, S37, S38, S39, S40, S41, S42, S43, S44, S45, S46, S47], L3_MSantiago),
+
+%Lineas Metro Buenos Aires
+line( 1, "Linea 1", "100 R.E.", [S49, S50, S51, S52, S53, S54, S55, S56, S57, S58, S59, S60, S61, S62, S63, S64, S65, S66], L1_MBaires),
+line( 6, "Linea 6", "UIC 60 ASCE", [S68, S69, S70, S71, S72, S73, S74, S75, S76, S77], L6_MBaires),
+
+%Lineas Metro Primera Division Chile
+line( 1, "Linea 1 Centro","UIC 60 ASCE", [S79, S80, S81, S82, S83, S84, S85], L1Centro_FutbolChile),
+line( 2, "Linea 2 Sur","UIC 60 ASCE", [S86, S87, S88], L2Sur_FutbolChile),
+line( 3, "Linea 3 Norte","UIC 60 ASCE", [S90, S91, S92, S93, S94], L3Norte_FutbolChile),
+
+
+
+
+
+/* Ejemplo Funcionalidad 5 */
+lineLength(L1_MSantiago, LargoL1_MSantiago, DistanciaL1_MSantiago, Costo_L1MSantiago),
+lineLength(L3_MSantiago, LargoL3_MSantiago, DistanciaL3_MSantiago, Costo_L3MSantiago),
+lineLength(L1_MBaires, LargoL1_MBaires, DistanciaL1_MBaires, Costo_L1MBaires),
+
+
+
+
+/* Ejemplo Funcionalidad 6 */
+lineSectionLength(L1_MSantiago, "USACH", "Baquedano", SeccionL1_MSantiago, DistanciaSeccionL1_MSantiago, CostoSeccionL1_MSantiago),
+lineSectionLength(L1_MSantiago, "Los Heroes", "Estacion Central", SeccionL1_MSantiago2, DistanciaSeccionL1_MSantiago2, CostoSeccionL1_MSantiago2),
+lineSectionLength(L1Centro_FutbolChile, "Estadio Monumental David Arellano -  Colo Colo", "Estadio Municipal La Cisterna - Palestino",
+    SeccionL1_MFutbolChile, DistanciaSeccionL1_MFutbolChile, CostoSeccionL1_MFutbolChile),
+%mismo resultado que el predicado anterior (misma seccion), solo que al realizar la consulta, ahora el nombre de la estacion 2 es estacion 1 y viceversa
+lineSectionLength(L1Centro_FutbolChile, "Estadio Municipal La Cisterna - Palestino", "Estadio Monumental David Arellano -  Colo Colo",
+    SeccionL1_MFutbolChileB, DistanciaSeccionL1_MFutbolChileB, CostoSeccionL1_MFutbolChileB),
+
+
+
+
+/* Ejemplo Funcionalidad 7 */
+lineAddSection(L2_MSantiago, S28, L2_MSantiago1),
+lineAddSection(L2_MSantiago1, S29, L2_MSantiago2),
+lineAddSection(L2_MSantiago2, S30, L2_MSantiago3),
+lineAddSection(L2_MSantiago3, S31, L2_MSantiago4),
+lineAddSection(L2_MSantiago4, S32, L2_MSantiago5),
+lineAddSection(L2_MSantiago5, S33, L2_MSantiago6),
+lineAddSection(L2_MSantiago6, S34, L2_MSantiago7),
+
+
+
+
+/* Ejemplo Funcionalidad 8 */
+isLine(L1_MSantiago),
+isLine(L1_MBaires),
+isLine(L1Centro_FutbolChile),
+
+
+
+/* Ejemplo Funcionalidad 9 */
+%Carros para tren 1
+pcar( 0, 90,  "NS-74", ct, PC0),
+pcar( 1, 100, "NS-74", tr, PC1),
+pcar( 2, 150, "NS-74", tr, PC2),
+pcar( 3, 90,  "NS-74", ct, PC3),
+
+%Carros para tren 2
+pcar( 4, 100, "AS-2016", ct, PC4),
+pcar( 5, 100, "AS-2016", ct, PC5),
+pcar( 6, 100, "AS-2016", ct, PC6),
+pcar( 7, 110, "AS-2016", tr, PC7),
+pcar( 8, 110, "AS-2016", tr, PC8),
+
+%Carros para tren 3
+pcar( 5, 80,  "NS-74", ct, PC9),
+pcar( 6, 120, "NS-74", tr, PC10),
+pcar( 7, 80,  "NS-74", ct, PC11),
+pcar( 8, 80,  "NS-74", ct, PC12),
+pcar( 9, 120, "NS-74", tr, PC13),
+
+
+
+/* Ejemplo Funcionalidad 10 */
+train( 1, "CAF", "UIC 60 ASCE", 70, [PC1, PC0, PC3, PC2], T1),
+train( 2, "CAF", "100 R.E.",    70, [PC7, PC4, PC5, PC6, PC8], T2),
+train( 3, "ALSTOM", "UIC 60 ASCE", 50, [], T3),
+
+
+
+
+/* Ejemplo Funcionalidad 11 */
+%Agregar carros a tren 3
+trainAddCar( T3, PC9, 0, T3_1),
+trainAddCar( T3_1, PC10, 0, T3_2),
+trainAddCar( T3_2, PC11, 2, T3_3),
+trainAddCar( T3_3, PC12, 2, T3_4),
+trainAddCar( T3_4, PC13, 4, T3_5),
+
+
+
+
+/* Ejemplo Funcionalidad 12 */
+trainRemoveCar( T3_5, 3, T3_6),
+trainRemoveCar( T2, 0, T2_1),
+trainRemoveCar( T1, 3, T1_1),
+
+
+
+
+/* Ejemplo Funcionalidad 13 */
+isTrain(T1),
+isTrain(T2),
+isTrain(T3_5),
+%isTrain(T2_1).       Tren invalido: retorna false
+
+
+
+
+/* Ejemplo Funcionalidad 14 */
+trainCapacity(T1, CapacidadT1),
+trainCapacity(T2, CapacidadT2),
+trainCapacity(T3_5, CapacidadT3_5),
+
+
+
+
+
+/* Ejemplo Funcionalidad 15 */
+driver( 0, "Isakito Espinoza", "CAF", D0),
+driver( 1, "Jorge Gonzalez",   "ALSTOM", D1),
+driver( 2, "Rodrigo Vasquez",  "CAF", D2),
+driver( 3, "Cristobal Briceno", "ALSTOM", D3),
+driver( 4, "Gustavo Cerati", "ALSTOM", D4),
+driver( 5, "Marcelo Barticciotto", "CAF", D5),
+driver( 6, "Fito Paez", "CAF", D6),
+
+
+
+
+/* Ejemplo Funcionalidad 16 */
+subway( 0, "Metro de Santiago", Sw0_Santiago),
+subway( 1, "Subte de Buenos Aires", Sw1_Baires),
+subway( 2, "Metro de Primera Division Futbol Chile", Sw2_FutbolChile),
+
+
+
+
+/* Ejemplo Funcionalidad 17 */
+subwayAddTrain(Sw0_Santiago, [T1, T2, T3_5], Sw0_Santiago1),
+subwayAddTrain(Sw1_Baires, [T2, T3_5], Sw1_Baires1),
+subwayAddTrain(Sw1_Baires1, [T1], Sw1_Baires2),
+subwayAddTrain(Sw2_FutbolChile, [T1, T3_5], Sw2_FutbolChile1),
+
+
+
+
+/* Ejemplo Funcionalidad 18 */
+subwayAddLine(Sw0_Santiago1, [L1_MSantiago, L2_MSantiago7], Sw0_Santiago2),
+subwayAddLine(Sw0_Santiago2, [L3_MSantiago], Sw0_Santiago3),
+subwayAddLine(Sw1_Baires2, [L1_MBaires, L6_MBaires], Sw1_Baires3),
+subwayAddLine(Sw2_FutbolChile1, [L1Centro_FutbolChile, L2Sur_FutbolChile, L3Norte_FutbolChile], Sw2_FutbolChile2),
+
+
+
+
+/* Ejemplo Funcionalidad 19 */
+subwayAddDriver(Sw0_Santiago3, [D0, D1, D2, D3], Sw0_Santiago4),
+subwayAddDriver(Sw1_Baires3, [D4, D5, D6], Sw1_Baires4),
+subwayAddDriver(Sw2_FutbolChile2, [D0, D1, D2, D3], Sw2_FutbolChile3),
+
+
+
+
+/* Ejemplo Funcionalidad 20 */
+subwayToString(Sw0_Santiago4, String_Sw0_Santiago),
+subwayToString(Sw1_Baires4, Stringdd),
+subwayToString(Sw2_FutbolChile3, String_Sw2_FutbolChile),
+%write(String_Sw2_FutbolChile),   %al imprimir el string se ve de forma ordenada en la consola de SWI-Prolog
+
+
+
+
+/* Ejemplo Funcionalidad 21 */
+subwaySetStationStopTime(Sw0_Santiago4, "USACH", 85, Sw0_Santiago5),
+subwaySetStationStopTime(Sw0_Santiago5, "San Pablo", 91, Sw0_Santiago6),
+subwaySetStationStopTime(Sw1_Baires4, "Peru", 45, Sw1_Baires5),
+
+
+
+
+/* Ejemplo Funcionalidad 22 */
+%Asignacion trenes metro santiago
+subwayAssignTraintoLine(Sw0_Santiago6, 1 , 3, Sw0_Santiago7),
+subwayAssignTraintoLine(Sw0_Santiago7, 2 , 1, Sw0_Santiago8),
+subwayAssignTraintoLine(Sw0_Santiago8, 3 , 3, Sw0_Santiago9),
+
+%Asignacion trenes metro buenos aires
+subwayAssignTraintoLine(Sw1_Baires5, 1, 6, Sw1_Baires6),
+subwayAssignTraintoLine(Sw1_Baires6, 2, 1, Sw1_Baires7),
+subwayAssignTraintoLine(Sw1_Baires7, 3, 6, Sw1_Baires8),
+
+%Asignacion trenes metro futbol chile
+subwayAssignTraintoLine(Sw2_FutbolChile3, 1, 1, Sw2_FutbolChile4),
+subwayAssignTraintoLine(Sw2_FutbolChile4, 3, 2, Sw2_FutbolChile5),
+
+
+
+
+/* Ejemplo Funcionalidad 23 */
+%Asignacion drivers metro santiago
+subwayAssignDriverToTrain(Sw0_Santiago9,  0, 1, "06:00:00", "Plaza Quilicura", "Puente Cal y Canto", Sw0_Santiago10),
+subwayAssignDriverToTrain(Sw0_Santiago10, 2, 2, "19:00:00", "San Pablo", "USACH", Sw0_Santiago11),
+subwayAssignDriverToTrain(Sw0_Santiago11, 1, 3, "13:20:00", "Hospitales", "Plaza Quilicura", Sw0_Santiago12),
+subwayAssignDriverToTrain(Sw0_Santiago12, 3, 3, "19:00:00", "Los Libertadores", "Parque Almagro", Sw0_Santiago13),
+
+%Asignacion drivers metro buenos aires
+subwayAssignDriverToTrain(Sw1_Baires8,  4, 3, "14:00:00", "Las Heras", "Caseros", Sw1_Baires9),
+subwayAssignDriverToTrain(Sw1_Baires9,  5, 1, "20:35:00", "Inclan Mezquita Al Ahmad", "Facultad de Derecho Julieta Lanteri", Sw1_Baires10),
+subwayAssignDriverToTrain(Sw1_Baires10, 6, 2, "10:00:00", "Plaza de Mayo", "Rio de Janeiro", Sw1_Baires11),
+
+%Asignacion drivers metro futbol chile
+subwayAssignDriverToTrain(Sw2_FutbolChile5, 0, 1, "19:25:00", "Estadio Monumental David Arellano -  Colo Colo", "Estadio Nicolas Chahuan - Union La Calera", Sw2_FutbolChile6),
+subwayAssignDriverToTrain(Sw2_FutbolChile6, 1, 3, "12:00:30", "Estadio Municipal La Cisterna - Palestino", "Estadio CAP - Huachipato", Sw2_FutbolChile7),
+subwayAssignDriverToTrain(Sw2_FutbolChile7, 2, 1, "07:20:00", "Estadio Bicentenario La Florida - Audax Italiano", "Estadio Sau Salito - Everton", Sw2_FutbolChile8),
+subwayAssignDriverToTrain(Sw2_FutbolChile8, 3, 3, "20:50:00", "Estadio CAP - Huachipato", "Estadio Municipal La Cisterna - Palestino", Sw2_FutbolChile9),
+
+
+
+
+/* Ejemplo Funcionalidad 24 */
+whereIsTrain(Sw0_Santiago13, 1, "06:24:33", EstacionEncontrada1),
+whereIsTrain(Sw2_FutbolChile9, 1, "19:59:59", EstacionEncontrada2),
+whereIsTrain(Sw1_Baires11, 2, "10:23:00", EstacionEncontrada3),
+
+
+
+
+/* Ejemplo Funcionalidad 25 */
+subwayTrainPath(Sw0_Santiago13, 1, "06:24:33", ListaRecorrido1),
+subwayTrainPath(Sw2_FutbolChile9, 1, "19:59:59", ListaRecorrido2),
+subwayTrainPath(Sw1_Baires11, 2, "10:23:00", ListaRecorrido3).

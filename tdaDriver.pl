@@ -33,7 +33,9 @@ METAS PRIMARIAS:
 %constructor
 /* Funcionalidad 15
 Grado de Implementacion: 1
-Crea elemento TDA driver, conductor de un tren del metro*/
+Crea elemento TDA driver, conductor de un tren del metro
+DOM: ID (num) X nombre conductor (string) X fabricante de los trenes que conduce (string) X VAR
+Recorrido: VAR TDA driver (lista de elementos)*/
 driver(ID,NAME,MAKER,[ID,NAME,MAKER]).
 
 

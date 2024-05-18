@@ -17,6 +17,7 @@ DOM:
     NombreStation: nombre de una estacion (string)
     SectionsSubPath: secciones de un tramo de las secciones de la linea (VAR)
     ELE: elemento x de una lista (cualquier tipo de dato)
+    ListaTiposExtremosEstaciones: Lista de 4 elementos de los tipos de estaciones de una lista de sections (Lista de strings)
 
 PREDICADOS:
 	line(ID,NOM,RailT,Sections,LINE)
@@ -44,6 +45,7 @@ PREDICADOS:
     circularLine(Sections)
     getFirstList(LIS,ELE)
     getLastList(LIS,ELE)
+    extremosTipoValido(ListaTiposExtremosEstaciones).
 
 METAS PRIMARIAS:
 	line: Relacionar elementos de una line en una variable
@@ -74,6 +76,7 @@ METAS SECUNDARIAS:
     circularLine: determina si las sections de una linea cumplen criterio linea circular, es decir, la priemra st1 y la ultima st2 son la misma
     getFirstList: selector primer elemento de una lista
     getLastList: selector ultimo elemento de una lista
+    extremosTipoValido: Verifica si las estaciones extremas de una lista de sections son tipo terminal o tipo mantencion si la anterior es tipo terminal
 
 */
 :-module(tdaLine,[line/5,isLine/1,lineLength/4,lineSectionLength/6,getSubListaSections/4,lineAddSection/3,getNameLine/2,getIdLine/2,getRailTypeLine/2,getSectionsLine/2,listaVacia/1,getFirstList/2,getLastList/2]).
@@ -85,7 +88,9 @@ METAS SECUNDARIAS:
 %constructor
 /* Funcionalidad 4
 Grado de Implementacion: 1
-Crea elemento TDA line, linea de metro*/
+Crea elemento TDA line, linea de metro
+DOM: ID (num) X Nombre linea (string) X Tipo de riel (string) X Secciones (Lista de secciones | Lista vacia) X VAR
+Recorrido: VAR TDA line (Lista de elementos)*/
 line(ID,Nombre,RailType,Sections,[ID,Nombre,RailType,Sections]).
 
 
@@ -119,7 +124,9 @@ addSectionToSections(Secciones,NewSeccion,NewSecciones):-append(Secciones,[NewSe
 
 /* Funcionalidad 5
 Grado de Implementacion: 1
-Determina el largo total de una linea, la distancia total en km, y el costo total*/
+Determina el largo total de una linea, la distancia total en km, y el costo total
+DOM: Linea (TDA line) X VAR X VAR X VAR
+Recorrido: VAR largo de linea (num) X VAR distancia de la linea (num) X VAR costo de una linea*/
 lineLength(LINE,LENGTH,Distancia,Costo):-line(_,_,_,Sections,LINE),largoLista(Sections,LENGTH),distanciaTotal(Sections,Distancia),costoTotal(Sections,Costo).
 
 %obtener cantidad de elementos de una lista
@@ -139,7 +146,9 @@ costoTotal([X|Y],T):-getCostSection(X,COS),costoTotal(Y,T1),T is T1+COS. %getCos
 
 /* Funcionalidad 6
 Grado de Implementacion: 1
-Determina el trayecto entre una estacion de origen y una final, la distancia del trayecto y costo*/
+Determina el trayecto entre una estacion de origen y una final, la distancia del trayecto y costo
+DOM: Linea (TDA line) X Nombre estacion1 (string) X Nombre estacion2 (string) X VAR X VAR X VAR
+Recorrido: VAR Secciones del trayecto (lista TDAS section) X VAR distancia del trayecto (num) X VAR costo del trayecto (num)*/
 lineSectionLength(LINE,NombreST1,NombreST2,Sections,Distancia,Costo):-line(_,_,_,ListaSections,LINE),getSubListaSections(ListaSections,NombreST1,NombreST2,Sections),
     distanciaTotal(Sections,Distancia),costoTotal(Sections,Costo).
 
@@ -157,7 +166,9 @@ getSubListaSections(Lista,N1,N2,Sub):-
 
 /* Funcionalidad 7
 Grado de Implementacion: 1
-Añade un trams a una linea*/
+Añade un tramo a una linea
+DOM: Linea (TDA Line) X seccion (TDA section) X VAR
+Recorrido: VAR Linea (TDA line)*/
 lineAddSection(LineBefore, Section, LineAfter):-line(ID,Name,RT,SectionsBefore,LineBefore), not(member(Section,SectionsBefore)), % con not member verificamos tramos no repetidos.
     addSectionToSections(SectionsBefore,Section,SectionsAfter), line(ID,Name,RT,SectionsAfter,LineAfter).
 %recordar que si la seccion esta repetida, retorna false, por lo que se cae la conjuncion de predicados en el script de pruebas
@@ -167,7 +178,9 @@ lineAddSection(LineBefore, Section, LineAfter):-line(ID,Name,RT,SectionsBefore,L
 
 /* Funcionalidad 8
 Grado de Implementacion: 1
-Determina si un elemeto es una Linea, considerando condiciones como tipo de linea, si todas las estaciones estan conectdas, etc.*/
+Determina si un elemeto es una Linea, considerando condiciones como tipo de linea, si todas las estaciones estan conectdas, etc.
+DOM: Linea (TDA line)
+Recorrido: None*/
 isLine(LINE):- line(ID,NombreL,RTL,SectionsL,LINE), number(ID), string(NombreL), string(RTL), checkSections(SectionsL),
     normalLine(SectionsL), checkAllStationsConnected(SectionsL),!. %caso linea normal
 isLine(LINE):- line(ID,NombreL,RTL,SectionsL,LINE), number(ID), string(NombreL), string(RTL), checkSections(SectionsL),
@@ -190,12 +203,21 @@ checkAllStationsConnected([Actual|COLA],St2Anterior):- getStation1Section(Actual
     St1Actual == St2Anterior, checkAllStationsConnected(COLA,St2Actual). %notamos la utilizacion de selectores del TDA section
 
 %determina si las secciones de una linea cumplen para ser ser linea normal, esto quiere decir que sus estaciones terminales son tipo t
-normalLine(Sections):-getFirstList(Sections,FirstSections),getLastList(Sections,LastSection),getStation1Section(FirstSections,FirstStation),
-    getStation2Section(LastSection,LastStation),getTypeStation(FirstStation,TypeFirtStation),getTypeStation(LastStation,TypeLastStation),
-    TypeFirtStation == "t", TypeLastStation == "t".   % usamos selectores TDSA station
+normalLine(Sections):- getFirstList(Sections,FirstSection),getLastList(Sections,LastSection),
+    getStation1Section(FirstSection,PrimeraEstacion), getStation2Section(FirstSection, SegundaEstacion),
+    getTypeStation(PrimeraEstacion, TipoPrimeraEst),  getTypeStation(SegundaEstacion, TipoSegundaEst), % usamos selectores TDSA station
+    getStation1Section(LastSection,PenultimaEstacion), getStation2Section(LastSection, UltimaEstacion),
+    getTypeStation(PenultimaEstacion, TipoPenultimaEst),  getTypeStation(UltimaEstacion, TipoUltimaEst),
+    extremosTipoValido([TipoPrimeraEst, TipoSegundaEst, TipoPenultimaEst, TipoUltimaEst]).  %verifica los estaciones de los extremos para analizar si son validas
+
+%verifica si los extremos de una las lista son tipo terminal o mantencion si la anterior es tipo terminal.
+extremosTipoValido(["t",_,_,"t"]).
+extremosTipoValido(["m","t",_,"t"]).
+extremosTipoValido(["t",_,"t","m"]).
+extremosTipoValido(["m","t","t","m"]).
 
 %determina si las secciones de una linea cumplen para ser linea circular, es decir, la primera st1 y ultima st2 son la misma
-circularLine(Sections):-getFirstList(Sections,FirstSections),getLastList(Sections,LastSection),getStation1Section(FirstSections,FirstStation),
+circularLine(Sections):-getFirstList(Sections,FirstSections),getLastList(Sections,LastSection),getStation1Section(FirstSections,FirstStation), % no debe verificar extremos porque no hay, es circular
     getStation2Section(LastSection,LastStation),FirstStation == LastStation.   % usamos selectores TDSA station
 
 %selector primer elemento de una lista

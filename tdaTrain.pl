@@ -76,7 +76,9 @@ METAS SECUNDARIAS:
 %constructor
 /* Funcionalidad 10
 Grado de Implementacion: 1
-Crea elemento TDA train, tren del metro*/
+Crea elemento TDA train, tren del metro
+DOM: Id (num) X fabricante del tren (string) X Tipo de riel tren (string) X rapidez km/h (num) X carros (lista de TDAs pcars) X VAR
+Recorrido: VAR TDA trarin (lista de elementos)*/
 train(ID,MAKER,RailT,SPEED,PCARs,[ID,MAKER,RailT,SPEED,PCARs]):-listOfPCARs(PCARs).
 
 
@@ -116,7 +118,9 @@ listOfPCARs([X|COLA]):-isPcar(X),listOfPCARs(COLA),!.
 
 /* Funcionalidad 11
 Grado de Implementacion: 1
-Añade un carros a un tren del metro, segun una posicion del carro dentro del tren*/
+Añade un carros a un tren del metro, segun una posicion del carro dentro del tren
+DOM: tren (TDA train) X carro (TDA pcar) X Posicion del carro a ingresar en el tren (num entero >= 0) X VAR
+Recorrido: VAR tren (TDA train)*/
 trainAddCar(TRAIN,PCAR,POSITION,NewTRAIN):- isPcar(PCAR), train(ID,MAKER,RailT,SPEED,PCARsBefore,TRAIN),
     insertarElementoEnPosicion(PCARsBefore,POSITION,PCAR,PCARsAfter), train(ID,MAKER,RailT,SPEED,PCARsAfter,NewTRAIN).
 
@@ -130,7 +134,9 @@ insertarElementoEnPosicion([X|COLA],Posicion,ELE,[X|COLA1]):-Posicion > 0, P is 
 
 /* Funcionalidad 12
 Grado de Implementacion: 1
-Elimina un carro de un tren, segun una posicion determina del carro en el tren*/
+Elimina un carro de un tren, segun una posicion determina del carro en el tren
+DOM: tren (TDA train) X Posicion del carro a ingresar en el tren (num entero >= 0) X VAR
+Recorrido: VAR Tren (TDA Train)*/
 trainRemoveCar(TRAIN,POSITION,NewTRAIN):- train(ID,MAKER,RailT,SPEED,PCARsBefore,TRAIN), eliminarElementoEnPosicion(PCARsBefore,POSITION,PCARsAfter),
     train(ID,MAKER,RailT,SPEED,PCARsAfter,NewTRAIN).
 
@@ -143,7 +149,9 @@ eliminarElementoEnPosicion([X|COLA],Posicion,[X|COLA1]):-Posicion > 0, P is Posi
 
 /* Funcionalidad 13
 Grado de Implementacion: 1
-Verifica si un elemento es un tren valido, considerando la condiciones como la compatibilidad de tipos caros y compatibilidad de modelos de carros*/
+Verifica si un elemento es un tren valido, considerando la condiciones como la compatibilidad de tipos caros y compatibilidad de modelos de carros
+DOM: Tren (TDA Train)
+Recorrido: None*/
 isTrain(TRAIN):- train(ID,MAKER,RailT,SPEED,PCARs,TRAIN), number(ID), string(MAKER), string(RailT), number(SPEED), length(PCARs,CantPCARs), CantPCARs >=2,  %condicion para estrucutra minima de 2 carros
     compatibleModelPCARs(PCARs), compatibleTypePCARs(PCARs). 
 
@@ -170,7 +178,9 @@ carrosCentrales([X|COLA]):- getTypePcar(X,TypePcarActual), TypePcarActual == ct,
 
 /* Funcionalidad 14
 Grado de Implementacion: 1
-Determina la capacidad maxima de pasajeros en un tren determinado*/
+Determina la capacidad maxima de pasajeros en un tren determinado
+DOM: Tren (TDA Train) X VAR
+Recorrido: VAR capacidad del tren (num)*/
 trainCapacity(TRAIN,CAP):- train(_,_,_,_,PCARs,TRAIN),capacidadTotal(PCARs,CAP).
 
 %obtener la capacidad total de una lista de TDA pcar
