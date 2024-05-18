@@ -34,6 +34,9 @@ METAS PRIMARIAS:
 :- use_module(tdaStation).
 
 %constructor
+/* Funcionalidad 3
+Grado de Implementacion: 1
+Crea elemento TDA section, secciones entre dos estaciones de metro*/
 section(Station1,Station2,Distancia,Costo,[Station1,Station2,Distancia,Costo]).
 
 %pertenecia

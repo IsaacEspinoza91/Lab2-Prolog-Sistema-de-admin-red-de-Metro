@@ -35,7 +35,10 @@ METAS PRIMARIAS
 :- module(tdaPcar,[pcar/5,isPcar/1,getCapacityPcar/2,getModelPcar/2,getTypePcar/2]).
 
 
-%constructor, FUNCIONALIDAD 9
+%constructor
+/* Funcionalidad 9
+Grado de Implementacion: 1
+Crea elemento TDA pcar, carro de un tren*/
 pcar(ID,Capacidad,Modelo,Tipo,[ID,Capacidad,Modelo,Tipo]).
 
 

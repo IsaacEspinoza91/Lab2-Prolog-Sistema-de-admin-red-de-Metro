@@ -82,7 +82,10 @@ METAS SECUNDARIAS:
 
 
 
-%constructor, Funcionalidad 4
+%constructor
+/* Funcionalidad 4
+Grado de Implementacion: 1
+Crea elemento TDA line, linea de metro*/
 line(ID,Nombre,RailType,Sections,[ID,Nombre,RailType,Sections]).
 
 
@@ -114,7 +117,9 @@ addSectionToSections(Secciones,NewSeccion,NewSecciones):-append(Secciones,[NewSe
 
 
 
-/*Funcionalidad 5 */
+/* Funcionalidad 5
+Grado de Implementacion: 1
+Determina el largo total de una linea, la distancia total en km, y el costo total*/
 lineLength(LINE,LENGTH,Distancia,Costo):-line(_,_,_,Sections,LINE),largoLista(Sections,LENGTH),distanciaTotal(Sections,Distancia),costoTotal(Sections,Costo).
 
 %obtener cantidad de elementos de una lista
@@ -132,7 +137,9 @@ costoTotal([X|Y],T):-getCostSection(X,COS),costoTotal(Y,T1),T is T1+COS. %getCos
 
 
 
-/*Funcionalidad 6 */
+/* Funcionalidad 6
+Grado de Implementacion: 1
+Determina el trayecto entre una estacion de origen y una final, la distancia del trayecto y costo*/
 lineSectionLength(LINE,NombreST1,NombreST2,Sections,Distancia,Costo):-line(_,_,_,ListaSections,LINE),getSubListaSections(ListaSections,NombreST1,NombreST2,Sections),
     distanciaTotal(Sections,Distancia),costoTotal(Sections,Costo).
 
@@ -148,7 +155,9 @@ getSubListaSections(Lista,N1,N2,Sub):-
 
 
 
-/*Funcionalidad 7 */
+/* Funcionalidad 7
+Grado de Implementacion: 1
+Añade un trams a una linea*/
 lineAddSection(LineBefore, Section, LineAfter):-line(ID,Name,RT,SectionsBefore,LineBefore), not(member(Section,SectionsBefore)), % con not member verificamos tramos no repetidos.
     addSectionToSections(SectionsBefore,Section,SectionsAfter), line(ID,Name,RT,SectionsAfter,LineAfter).
 %recordar que si la seccion esta repetida, retorna false, por lo que se cae la conjuncion de predicados en el script de pruebas
@@ -156,7 +165,9 @@ lineAddSection(LineBefore, Section, LineAfter):-line(ID,Name,RT,SectionsBefore,L
 
 
 
-/* Funcionalidad 8 */
+/* Funcionalidad 8
+Grado de Implementacion: 1
+Determina si un elemeto es una Linea, considerando condiciones como tipo de linea, si todas las estaciones estan conectdas, etc.*/
 isLine(LINE):- line(ID,NombreL,RTL,SectionsL,LINE), number(ID), string(NombreL), string(RTL), checkSections(SectionsL),
     normalLine(SectionsL), checkAllStationsConnected(SectionsL),!. %caso linea normal
 isLine(LINE):- line(ID,NombreL,RTL,SectionsL,LINE), number(ID), string(NombreL), string(RTL), checkSections(SectionsL),

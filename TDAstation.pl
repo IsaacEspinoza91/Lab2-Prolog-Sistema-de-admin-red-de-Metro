@@ -34,6 +34,9 @@ METAS PRIMARIAS:
 
 
 %constructor
+/* Funcionalidad 2
+Grado de Implementacion: 1
+Crea elemento TDA station, estacion de metro*/
 station(IDST,NombreST,TipoST,StopTimeST,[IDST,NombreST,TipoST,StopTimeST]).
 
 %pertenecia

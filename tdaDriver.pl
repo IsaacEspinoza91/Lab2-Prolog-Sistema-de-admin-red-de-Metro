@@ -30,7 +30,10 @@ METAS PRIMARIAS:
 :-module(tdaDriver,[driver/4,getIdDriver/2,getNameDriver/2,getMakerDriver/2]).
 
 
-%constructor, Funcionalidad 15
+%constructor
+/* Funcionalidad 15
+Grado de Implementacion: 1
+Crea elemento TDA driver, conductor de un tren del metro*/
 driver(ID,NAME,MAKER,[ID,NAME,MAKER]).
 
 

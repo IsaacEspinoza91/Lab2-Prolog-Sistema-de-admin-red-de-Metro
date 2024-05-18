@@ -73,7 +73,10 @@ METAS SECUNDARIAS:
 :- use_module(tdaPcar).
 :- use_module(tdaLine).
 
-%constructor, Funcionalidad 10
+%constructor
+/* Funcionalidad 10
+Grado de Implementacion: 1
+Crea elemento TDA train, tren del metro*/
 train(ID,MAKER,RailT,SPEED,PCARs,[ID,MAKER,RailT,SPEED,PCARs]):-listOfPCARs(PCARs).
 
 
@@ -111,7 +114,9 @@ listOfPCARs([X|COLA]):-isPcar(X),listOfPCARs(COLA),!.
 
 
 
-/* Funcionalidad 11*/
+/* Funcionalidad 11
+Grado de Implementacion: 1
+Añade un carros a un tren del metro, segun una posicion del carro dentro del tren*/
 trainAddCar(TRAIN,PCAR,POSITION,NewTRAIN):- isPcar(PCAR), train(ID,MAKER,RailT,SPEED,PCARsBefore,TRAIN),
     insertarElementoEnPosicion(PCARsBefore,POSITION,PCAR,PCARsAfter), train(ID,MAKER,RailT,SPEED,PCARsAfter,NewTRAIN).
 
@@ -123,7 +128,9 @@ insertarElementoEnPosicion([X|COLA],Posicion,ELE,[X|COLA1]):-Posicion > 0, P is 
 
 
 
-/* Funcionalidad 12*/
+/* Funcionalidad 12
+Grado de Implementacion: 1
+Elimina un carro de un tren, segun una posicion determina del carro en el tren*/
 trainRemoveCar(TRAIN,POSITION,NewTRAIN):- train(ID,MAKER,RailT,SPEED,PCARsBefore,TRAIN), eliminarElementoEnPosicion(PCARsBefore,POSITION,PCARsAfter),
     train(ID,MAKER,RailT,SPEED,PCARsAfter,NewTRAIN).
 
@@ -134,7 +141,9 @@ eliminarElementoEnPosicion([X|COLA],Posicion,[X|COLA1]):-Posicion > 0, P is Posi
 
 
 
-/* Funcionalidad 13*/
+/* Funcionalidad 13
+Grado de Implementacion: 1
+Verifica si un elemento es un tren valido, considerando la condiciones como la compatibilidad de tipos caros y compatibilidad de modelos de carros*/
 isTrain(TRAIN):- train(ID,MAKER,RailT,SPEED,PCARs,TRAIN), number(ID), string(MAKER), string(RailT), number(SPEED), length(PCARs,CantPCARs), CantPCARs >=2,  %condicion para estrucutra minima de 2 carros
     compatibleModelPCARs(PCARs), compatibleTypePCARs(PCARs). 
 
@@ -159,7 +168,9 @@ carrosCentrales([X|COLA]):- getTypePcar(X,TypePcarActual), TypePcarActual == ct,
 
 
 
-/* Funcionalidad 14*/
+/* Funcionalidad 14
+Grado de Implementacion: 1
+Determina la capacidad maxima de pasajeros en un tren determinado*/
 trainCapacity(TRAIN,CAP):- train(_,_,_,_,PCARs,TRAIN),capacidadTotal(PCARs,CAP).
 
 %obtener la capacidad total de una lista de TDA pcar
