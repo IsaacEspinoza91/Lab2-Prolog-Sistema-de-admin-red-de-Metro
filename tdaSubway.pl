@@ -439,7 +439,7 @@ whereIsTrain(SUBWAY,TrainID,TiempoPreguntado,NombreStationOut):-
 
 
 %verifica que una lista de secciones tenga sentido normal de recorrido
-sentidoNormalDeRecorrido([[NombreST1,_,_,_]|_],NombreST1).
+sentidoNormalDeRecorrido([[[_,NombreST1,_,_],_,_,_]|_],NombreST1).
 
 
 %encuentra elementos tiempo partida, estacion partida y estacion llegada dentro de una lista de Driver_trains en un 1ERA ocurrencia. En caso de no encontrar, el valor es false
@@ -463,11 +463,50 @@ recorrerSectionsHastaLlegar([[[_,NombreStLimite,_,TiempoParadaInicialSt1],_,Dist
 recorrerSectionsHastaLlegar([[[_,_,_,TiempoParadaInicialSt1],[_,_,_,TiempoParadaInicialSt2],DistanciaSection,_]|COLA],RapidezTrenKmH,TiempoLimite,NombreStLimite):- 
     TiempoSection1 is ((DistanciaSection/RapidezTrenKmH)*3600), TiempoACUM is (TiempoSection1+TiempoParadaInicialSt1+TiempoParadaInicialSt2),
     recorrerSectionsHastaLlegar(COLA, RapidezTrenKmH, TiempoACUM, TiempoLimite,NombreStLimite),!.
-%Casos base
-recorrerSectionsHastaLlegar([[_,[_,NombreStation,_,_],_,_]|[]],_,_,_,NombreStation). % caso base en que se acabo el recorrido del tren y todavia no se superaba el tiempo limite preguntado
-recorrerSectionsHastaLlegar([[[_,NombreStation,_,_],_,_,_]|_],_,_,_,NombreStation). %caso base
+
 %caso recursivo
 recorrerSectionsHastaLlegar([[_,[_,_,_,TiempoParadaSt2],DistanciaSection,_]|COLA], RapidezTrenKmH, TiempoACUM, TiempoLimite, NombreST):-
     TiempoSection is ((DistanciaSection/RapidezTrenKmH)*3600),
     TiempoActualACUM is (TiempoACUM+TiempoParadaSt2+TiempoSection), TiempoActualACUM =< TiempoLimite,
     recorrerSectionsHastaLlegar(COLA, RapidezTrenKmH, TiempoActualACUM, TiempoLimite, NombreST).
+%Casos base
+recorrerSectionsHastaLlegar([[_,[_,NombreStation,_,_],_,_]|[]],_,_,_,NombreStation). % caso base en que se acabo el recorrido del tren y todavia no se superaba el tiempo limite preguntado
+recorrerSectionsHastaLlegar([[[_,NombreStation,_,_],_,_,_]|_],_,_,_,NombreStation). %caso base
+
+
+
+
+/* Funcionalidad 25 */
+%caso sentido normal del recorrido
+subwayTrainPath(SUBWAY,TrainID,HoraPreguntada,ListaEstaciones):-
+    whereIsTrain(SUBWAY,TrainID,HoraPreguntada,NombreEstacionLimite),
+    getDriver_TrainSubway(SUBWAY,Drivers_Trains),findEleDriver_TrainByTrainID(Drivers_Trains,TrainID,_,EstacionInicio,EstacionFin),
+    getLine_TrainsSubway(SUBWAY,Line_TrainsSUBWAY),
+    findLine_TrainINLine_Trains(Line_TrainsSUBWAY, TrainID, Line_TrainEncontrado), getFirstList(Line_TrainEncontrado, LineID),
+    getLinesSubway(SUBWAY,Lineas), findLineInLines(Lineas,LineID,LineaEncontrada),          %obtener linea buscada dentro del subway
+    getSectionsLine(LineaEncontrada,ListaSections),
+    getSubListaSections(ListaSections,EstacionInicio,EstacionFin,SectionsDelTramoDelRecorrido), %retorna dla sub lista entre estaciones, da igual cual sale primero. 
+    sentidoNormalDeRecorrido(SectionsDelTramoDelRecorrido, EstacionInicio),
+    recorrerSectionsYGuardarNombreEstacionesRecorridas(SectionsDelTramoDelRecorrido,NombreEstacionLimite, ListaEstaciones),!.  %obtener lista de nombres del recorrido
+%caso sentido inverso del recorrido
+subwayTrainPath(SUBWAY,TrainID,HoraPreguntada,ListaEstaciones):-
+    whereIsTrain(SUBWAY,TrainID,HoraPreguntada,NombreEstacionLimite),
+    getDriver_TrainSubway(SUBWAY,Drivers_Trains),findEleDriver_TrainByTrainID(Drivers_Trains,TrainID,_,EstacionInicio,EstacionFin),
+    getLine_TrainsSubway(SUBWAY,Line_TrainsSUBWAY),
+    findLine_TrainINLine_Trains(Line_TrainsSUBWAY, TrainID, Line_TrainEncontrado), getFirstList(Line_TrainEncontrado, LineID),
+    getLinesSubway(SUBWAY,Lineas), findLineInLines(Lineas,LineID,LineaEncontrada),          %obtener linea buscada dentro del subway
+    getSectionsLine(LineaEncontrada,ListaSections),
+    getSubListaSections(ListaSections,EstacionInicio,EstacionFin,SectionsDelTramoDelRecorrido),
+    recorridoInversoDeSections(SectionsDelTramoDelRecorrido, SectionsParaRecorridoInverso),
+    recorrerSectionsYGuardarNombreEstacionesRecorridas(SectionsParaRecorridoInverso,NombreEstacionLimite, ListaEstaciones),!.
+
+%crea una lista con todos los nombres de estaciones de una lista de sections que se recorren
+recorrerSectionsYGuardarNombreEstacionesRecorridas([SeccionActual|COLA],NombreLimite,ListaNombreSecciones):-
+    getStation1Section(SeccionActual,Station1Actual), getNameStation(Station1Actual,NombreStation1),
+    recorrerSectionsYGuardarNombreStations2([SeccionActual|COLA],NombreLimite,ListaStationsSinPrimeraSt1),
+    append([NombreStation1],ListaStationsSinPrimeraSt1, ListaNombreSecciones).
+
+%recorre lista de sections y guarda los nombre de las estaciones 2.
+recorrerSectionsYGuardarNombreStations2([[_,[_,NombreLimite,_,_],_,_]|_],NombreLimite,[NombreLimite]):-!.
+recorrerSectionsYGuardarNombreStations2([[_,[_,NombreSt,_,_],_,_]|COLA],NombreLimite,[NombreSt|COLA1]):- NombreSt \= NombreLimite,
+    recorrerSectionsYGuardarNombreStations2(COLA,NombreLimite,COLA1).
