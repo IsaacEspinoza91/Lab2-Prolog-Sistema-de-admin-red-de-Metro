@@ -16,7 +16,7 @@ DOM:
     HoraPartida: Horario de partida de un tren en el metro en formato HH:MM:SS (string TDA Hora)
     StPartida: Nombre de la estacion de partida de un tren en el metro (string)
     StLlegada: Nombre de la estacion de llegada de un tren en el metro (string)
-    DRIVER_TRAIN: Lista de elementos con la siguientes estructura [IdDriver,IdTrain,HoraPartida,StPartida,StLlegada]
+    DRIVER_TRAINs: Lista de elementos con la siguientes estructura [IdDriver,IdTrain,HoraPartida,StPartida,StLlegada]
     SUBWAY: TDA red de metro (TDA suwbay)
     LIST: Lista de elementos (Lista)
     NameStation: Nombre de una estacion de metro (string)
@@ -29,11 +29,14 @@ DOM:
     Section: TDA seccion (TDA Section)
     LISTA: Lista con elementos, sin sub listas (lista)
     LISTAS: Lista de sublistas con elementos (lista de sublistas)
+    Hora: Horario (TDA Hora)
+    RapidezTren: Rapidez de un tren en km/h (num)
+    ListaNombreEstaciones: Lista de nombres de estaciones (LIsta de Strings)
 
 PREDICADOS:
     subway(ID,NAME,SUBWAY)
     isSubway(SUBWA)
-    subwayComplete(ID,NAME,TRAINS,LINES,DRIVERS,LINE_TRAINS,DRIVER_TRAIN,SUBWAY).
+    subwayComplete(ID,NAME,TRAINS,LINES,DRIVERS,LINE_TRAINS,DRIVER_TRAINs,SUBWAY).
     getIdSubway(SUBWAY,ID)
     getNameSubway(SUBWAY,NAME)
     getTrainsSubway(SUBWAY,TRAINS)
@@ -71,9 +74,18 @@ PREDICADOS:
     driversToString(DRIVERS,StringFinal)
     line_TrainsToString(LINE_TRAINS,StringFinal)
     line_TrainAString(Line_Train,StringFinal)
-    driver_TrainToString(DRIVER_TRAIN,StringFinal)
+    driver_TrainToString(DRIVER_TRAINs,StringFinal)
     convertirListaDeListasAString(LISTAS, StringFinal)
     convertirListaAString(LISTA, StringFinal)
+    whereIsTrain(SUBWAY,IdTrain,Hora,NameStation)
+    sentidoNormalDeRecorrido(Sections,NameStation).
+    findEleDriver_TrainByTrainID(DRIVER_TRAINs,IdTrain,TienpoPartida,NameStation,NameStation)
+    recorridoInversoDeSections(Sections,Sections)
+    invertirStationsEnSections(Sections,Sections)
+    recorrerSectionsHastaLlegar(Sections,RapidezTren,Hora,NameStation)
+    subwayTrainPath(SUBWAY,IdTrain,Hora,ListaNombreEstaciones)
+    recorrerSectionsYGuardarNombreEstacionesRecorridas(Sections,NameStation,ListaNombreSecciones)
+    recorrerSectionsYGuardarNombreStations2(Sections,NameStation,ListaNombreSecciones)
 
 METAS PRIMARIAS:
     subway: Relacionar elementos id y nombre de un TDA subway (constructor)
@@ -92,6 +104,8 @@ METAS PRIMARIAS:
     subwayAssignTraintoLine: Asignar un tren a una linea en un subway, si es que existen en el subway y son compatibles segun el tipo de riel
     subwayAssignDriverToTrain: Asignar un recorrido a un conductor en un tren, segun si exite el driver, el train, y si las estaciones son de la linea asignadas al tren
     subwayToString: Convierte todos los datos de un subway a un único string.
+    whereIsTrain: Busqueda del tren en su recorrido de la linea, entraga la ultima estacion donde estuvo dado un tiempo (TDA Hora) ingresado
+    subwayTrainPath: Entrega una lista con los nombres de las estaciones de un recorrido de un tren en una Hora determinada
 
 METAS SECUNDARIAS:
     listaSinElementosRepetidos: Verificar que una lista no tiene elementos repetidos
@@ -121,6 +135,13 @@ METAS SECUNDARIAS:
     driver_TrainToString: Convertir una lista de elementos driver_train a string
     convertirListaDeListasAString: Convertir una lista de sublistas de elementos a un string
     convertirListaAString: Convertir una lista SIN SUB LISTAS a un string
+    sentidoNormalDeRecorrido: Verifica que una lista de secciones tenga sentido normal de recorrido
+    findEleDriver_TrainByTrainID: Entrega Tiempo de Partida, Estacion de Partida y estacion de llegada dentro de una lista Driver_trains (1era ocurrencia)
+    recorridoInversoDeSections: Invierte las secciones de una lista de sections, talque ademas de la lista inversa, la st1 y la st2 permutan sus posiciones
+    invertirStationsEnSections: Invertie las estaciones (St1 y St2) de una lista de sections
+    recorrerSectionsHastaLlegar: Entrega nombre de la estacion limite al recorrer secciones calculando el tiempo de recorrido hasta llegar a un limite de tiempo
+    recorrerSectionsYGuardarNombreEstacionesRecorridas: Entrega una lista con todos los nombres de estaciones de un recorrido de una lista de secciones hasta una estacion determinada
+    recorrerSectionsYGuardarNombreStations2: Entrega una lista con los todos nombres de Station2 de una lista de secciones hasta una estacion determinada
 
 */
 :-module(tdaSubway,[subway/3,subwayAddTrain/3,subwayAddLine/3,subwayAddDriver/3,getIdSubway/2,getNameSubway/2,getTrainsSubway/2,getLinesSubway/2,getDriversSubway/2,
@@ -455,6 +476,7 @@ invertirStationsEnSections([],[]).
 invertirStationsEnSections([[ST1,ST2,DIS,COST]|COLA],[[ST2,ST1,DIS,COST]|COLA1]):-invertirStationsEnSections(COLA,COLA1).
 
 
+%Entrega nombre de la estacion limite al recorrer secciones calculando el tiempo de recorrido hasta llegar a un limite de tiempo
 %CASO Especial en donde la primera seccion ya supera el tiempo limite. Se retorna el nombre de Station1
 recorrerSectionsHastaLlegar([[[_,NombreStLimite,_,TiempoParadaInicialSt1],_,DistanciaSection,_]|+],RapidezTrenKmH,TiempoLimite,NombreStLimite):-
     TiempoSection is ((DistanciaSection/RapidezTrenKmH)*3600), TiempoACUM is (TiempoSection+TiempoParadaInicialSt1),
