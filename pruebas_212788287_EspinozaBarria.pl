@@ -355,7 +355,7 @@ trainRemoveCar( T1, 3, T1_1),
 isTrain(T1),
 isTrain(T2),
 isTrain(T3_5),
-%isTrain(T2_1).       Tren invalido: retorna false
+%isTrain(T2_1).       %Tren invalido: retorna false
 
 
 
@@ -460,7 +460,7 @@ subwayAssignDriverToTrain(Sw0_Santiago12, 3, 3, "19:00:00", "Los Libertadores", 
 %Asignacion drivers metro buenos aires
 subwayAssignDriverToTrain(Sw1_Baires8,  4, 3, "14:00:00", "Las Heras", "Caseros", Sw1_Baires9),
 subwayAssignDriverToTrain(Sw1_Baires9,  5, 1, "20:35:00", "Inclan Mezquita Al Ahmad", "Facultad de Derecho Julieta Lanteri", Sw1_Baires10),
-subwayAssignDriverToTrain(Sw1_Baires10, 6, 2, "10:00:00", "Plaza de Mayo", "Rio de Janeiro", Sw1_Baires11),
+subwayAssignDriverToTrain(Sw1_Baires10, 6, 2, "10:00:00", "Plaza de Mayo", "Rio de Janeiro", Sw1_Baires11),   %ejemplo de recorrido de tren en sentido inverso
 
 %Asignacion drivers metro futbol chile
 subwayAssignDriverToTrain(Sw2_FutbolChile5, 0, 1, "19:25:00", "Estadio Monumental David Arellano -  Colo Colo", "Estadio Nicolas Chahuan - Union La Calera", Sw2_FutbolChile6),
@@ -474,7 +474,7 @@ subwayAssignDriverToTrain(Sw2_FutbolChile8, 3, 3, "20:50:00", "Estadio CAP - Hua
 /* Ejemplo Funcionalidad 24 */
 whereIsTrain(Sw0_Santiago13, 1, "06:24:33", EstacionEncontrada1),
 whereIsTrain(Sw2_FutbolChile9, 1, "19:59:59", EstacionEncontrada2),
-whereIsTrain(Sw1_Baires11, 2, "10:23:00", EstacionEncontrada3),
+whereIsTrain(Sw1_Baires11, 2, "10:23:00", EstacionEncontrada3),   %recorrido en sentido inverso es 100% funcional
 
 
 

@@ -549,8 +549,9 @@ subwayTrainPath(SUBWAY,TrainID,HoraPreguntada,ListaEstaciones):-
     getLinesSubway(SUBWAY,Lineas), findLineInLines(Lineas,LineID,LineaEncontrada),          %obtener linea buscada dentro del subway
     getSectionsLine(LineaEncontrada,ListaSections),
     getSubListaSections(ListaSections,EstacionInicio,EstacionFin,SectionsDelTramoDelRecorrido), %retorna dla sub lista entre estaciones, da igual cual sale primero. 
-    sentidoNormalDeRecorrido(SectionsDelTramoDelRecorrido, EstacionInicio),
-    recorrerSectionsYGuardarNombreEstacionesRecorridas(SectionsDelTramoDelRecorrido,NombreEstacionLimite, ListaEstaciones),!.  %obtener lista de nombres del recorrido
+    sentidoNormalDeRecorrido(SectionsDelTramoDelRecorrido, EstacionInicio),    %verifica el sentido normal del recorrido
+    %recorrerSectionsYGuardarNombreEstacionesRecorridas(SectionsDelTramoDelRecorrido,NombreEstacionLimite, ListaEstaciones),!.  %obtener lista de nombres del recorrido
+    recorrerSectionsDesdeEstacionPreguntadaHastaFinRecorrido(SectionsDelTramoDelRecorrido, NombreEstacionLimite, ListaEstaciones),!.
 %caso sentido inverso del recorrido
 subwayTrainPath(SUBWAY,TrainID,HoraPreguntada,ListaEstaciones):-
     whereIsTrain(SUBWAY,TrainID,HoraPreguntada,NombreEstacionLimite),
@@ -560,16 +561,19 @@ subwayTrainPath(SUBWAY,TrainID,HoraPreguntada,ListaEstaciones):-
     getLinesSubway(SUBWAY,Lineas), findLineInLines(Lineas,LineID,LineaEncontrada),          %obtener linea buscada dentro del subway
     getSectionsLine(LineaEncontrada,ListaSections),
     getSubListaSections(ListaSections,EstacionInicio,EstacionFin,SectionsDelTramoDelRecorrido),
-    recorridoInversoDeSections(SectionsDelTramoDelRecorrido, SectionsParaRecorridoInverso),
-    recorrerSectionsYGuardarNombreEstacionesRecorridas(SectionsParaRecorridoInverso,NombreEstacionLimite, ListaEstaciones),!.
+    recorridoInversoDeSections(SectionsDelTramoDelRecorrido, SectionsParaRecorridoInverso),    %invierte el recorrido del orden de una lista de sections
+    %recorrerSectionsYGuardarNombreEstacionesRecorridas(SectionsParaRecorridoInverso,NombreEstacionLimite, ListaEstaciones),!.
+    recorrerSectionsDesdeEstacionPreguntadaHastaFinRecorrido(SectionsParaRecorridoInverso, NombreEstacionLimite, ListaEstaciones),!.
 
-%crea una lista con todos los nombres de estaciones de una lista de sections que se recorren
-recorrerSectionsYGuardarNombreEstacionesRecorridas([SeccionActual|COLA],NombreLimite,ListaNombreSecciones):-
+%crea una lista con todas los nombres de estaciones desde una estacion especifica hasta el final del recorrido de la lista de sections
+recorrerSectionsDesdeEstacionPreguntadaHastaFinRecorrido([SeccionActual|COLA],NombreStPreguntada, ListaNombresRecorridoProximo):-
     getStation1Section(SeccionActual,Station1Actual), getNameStation(Station1Actual,NombreStation1),
-    recorrerSectionsYGuardarNombreStations2([SeccionActual|COLA],NombreLimite,ListaStationsSinPrimeraSt1),
-    append([NombreStation1],ListaStationsSinPrimeraSt1, ListaNombreSecciones).
+    recorrerSectionsYGuardarTodosLosNombresDeStations([SeccionActual|COLA], ListaNombresEstacionesSinPrimeraStation),
+    append([NombreStation1], ListaNombresEstacionesSinPrimeraStation, ListaNombresEstaciones),             %se agrega primera estacion a la lista de nombres
+    append(_,[NombreStPreguntada|COLANameStations], ListaNombresEstaciones),                         %sub lista desde la estacion preguntada hasta el final de recorrido
+    append([NombreStPreguntada], COLANameStations, ListaNombresRecorridoProximo).               %se agrega el nombre de la primera estacion.
 
-%recorre lista de sections y guarda los nombre de las estaciones 2.
-recorrerSectionsYGuardarNombreStations2([[_,[_,NombreLimite,_,_],_,_]|_],NombreLimite,[NombreLimite]):-!.
-recorrerSectionsYGuardarNombreStations2([[_,[_,NombreSt,_,_],_,_]|COLA],NombreLimite,[NombreSt|COLA1]):- NombreSt \= NombreLimite,
-    recorrerSectionsYGuardarNombreStations2(COLA,NombreLimite,COLA1).
+%crea una lista con todos los nombres de station2 de una lista de secciones
+recorrerSectionsYGuardarTodosLosNombresDeStations([],[]):-!.    %caso base, se recorrio todo hasta el final del recorrido del tren
+recorrerSectionsYGuardarTodosLosNombresDeStations([[_,[_,NombreSt,_,_],_,_]|COLA],[NombreSt|COLA1]):-
+    recorrerSectionsYGuardarTodosLosNombresDeStations(COLA,COLA1).
