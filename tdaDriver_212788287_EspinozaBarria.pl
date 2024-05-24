@@ -27,7 +27,7 @@ METAS PRIMARIAS:
     setNameDriver: Driver con nuevo nombre
     setMakerDriver: Driver con nuevo fabricante de trenes
 */
-:-module(tdaDriver,[driver/4,getIdDriver/2,getNameDriver/2,getMakerDriver/2]).
+:-module(tdaDriver_212788287_EspinozaBarria,[driver/4,getIdDriver/2,getNameDriver/2,getMakerDriver/2]).
 
 
 %constructor

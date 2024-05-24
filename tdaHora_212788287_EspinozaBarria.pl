@@ -47,7 +47,7 @@ Meta Secundarias:
     numberHoraString: Convierte un numero menor a 100 a un string considerando dos digitos
 
 */
-:-module(tdaHora,[hora/4,getHHHora/2,getMMHora/2,getSSHora/2,setHHHora/3,setMMHora/3,setSSHora/3,horaASegundos/2,diferenciaDeHorasEnSS/3,segundosAHora/2]).
+:-module(tdaHora_212788287_EspinozaBarria,[hora/4,getHHHora/2,getMMHora/2,getSSHora/2,setHHHora/3,setMMHora/3,setSSHora/3,horaASegundos/2,diferenciaDeHorasEnSS/3,segundosAHora/2]).
 
 %Constructor
 hora(HH,MM,SS,StringHora):- HH>=0, HH<24, MM>=0, MM<60, SS>=0, SS<60,

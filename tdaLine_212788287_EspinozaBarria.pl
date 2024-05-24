@@ -81,9 +81,9 @@ METAS SECUNDARIAS:
     extremosTipoValido: Verifica si las estaciones extremas de una lista de sections son tipo terminal o tipo mantencion si la anterior es tipo terminal
 
 */
-:-module(tdaLine,[line/5,isLine/1,lineLength/4,lineSectionLength/6,getSubListaSections/4,lineAddSection/3,getNameLine/2,getIdLine/2,getRailTypeLine/2,getSectionsLine/2,listaVacia/1,getFirstList/2,getLastList/2]).
-:-use_module(tdaSection).
-:-use_module(tdaStation).
+:-module(tdaLine_212788287_EspinozaBarria,[line/5,isLine/1,lineLength/4,lineSectionLength/6,getSubListaSections/4,lineAddSection/3,getNameLine/2,getIdLine/2,getRailTypeLine/2,getSectionsLine/2,listaVacia/1,getFirstList/2,getLastList/2]).
+:-use_module(tdaSection_212788287_EspinozaBarria).
+:-use_module(tdaStation_212788287_EspinozaBarria).
 
 
 

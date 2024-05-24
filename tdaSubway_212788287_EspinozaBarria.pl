@@ -144,17 +144,16 @@ METAS SECUNDARIAS:
     recorrerSectionsYGuardarNombreStations2: Entrega una lista con los todos nombres de Station2 de una lista de secciones hasta una estacion determinada
 
 */
-:-module(tdaSubway,[subway/3,subwayAddTrain/3,subwayAddLine/3,subwayAddDriver/3,getIdSubway/2,getNameSubway/2,getTrainsSubway/2,getLinesSubway/2,
+:-module(tdaSubway_212788287_EspinozaBarria,[subway/3,subwayAddTrain/3,subwayAddLine/3,subwayAddDriver/3,getIdSubway/2,getNameSubway/2,getTrainsSubway/2,getLinesSubway/2,
 getDriversSubway/2,getDriver_TrainSubway/2,getLine_TrainsSubway/2,subwayToString/2,subwaySetStationStoptime/4,subwayAssignTraintoLine/4,
 subwayAssignDriverToTrain/7,whereIsTrain/4,subwayTrainPath/4]).
-:-use_module(tdaSection).
-:-use_module(tdaStation).
-:-use_module(tdaLine).
-:-use_module(tdaPcar).
-:-use_module(tdaDriver).
-:-use_module(tdaTrain).
-:-use_module(tdaHora).
-
+:-use_module(tdaDriver_212788287_EspinozaBarria).
+:-use_module(tdaHora_212788287_EspinozaBarria).
+:-use_module(tdaLine_212788287_EspinozaBarria).
+:-use_module(tdaPcar_212788287_EspinozaBarria).
+:-use_module(tdaSection_212788287_EspinozaBarria).
+:-use_module(tdaStation_212788287_EspinozaBarria).
+:-use_module(tdaTrain_212788287_EspinozaBarria).
 
 %constructor
 /* Funcionalidad 16
@@ -497,7 +496,7 @@ whereIsTrain(SUBWAY,TrainID,TiempoPreguntado,NombreStationOut):-
 
 
 %verifica que una lista de secciones tenga sentido normal de recorrido
-sentidoNormalDeRecorrido([[[_,NombreST1,_,_],_,_,_]|_],NombreST1).
+sentidoNormalDeRecorrido(ListaSecciones,NombreST1):-getStation1Section(ListaSecciones,Station1Seccion), getNameStation(Station1Seccion,NombreST1).
 
 
 %encuentra elementos tiempo partida, estacion partida y estacion llegada dentro de una lista de Driver_trains en un 1ERA ocurrencia. En caso de no encontrar, el valor es false
