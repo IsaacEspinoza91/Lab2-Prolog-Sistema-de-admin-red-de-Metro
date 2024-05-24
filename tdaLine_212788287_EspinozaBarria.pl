@@ -46,6 +46,7 @@ PREDICADOS:
     getFirstList(LIS,ELE)
     getLastList(LIS,ELE)
     extremosTipoValido(ListaTiposExtremosEstaciones).
+    isLine(LINE)
 
 METAS PRIMARIAS:
 	line: Relacionar elementos de una line en una variable
@@ -61,6 +62,7 @@ METAS PRIMARIAS:
     lineLength: Datos largo, distancia, costo de linea
     lineSectionLength: Datos distancia y costo de un sub tramo de las secciones de una linea
     lineAddSection: Linea con una sections especificada agregada al final de sections, dado que esta no este repetida
+    isLine: Verificar validez de line con considerando condiciones como tipo de linea, si todas las estaciones estan conectdas, etc.
 
 METAS SECUNDARIAS:
     largoLista: numero de elementos de una lista
@@ -210,11 +212,23 @@ normalLine(Sections):- getFirstList(Sections,FirstSection),getLastList(Sections,
     getTypeStation(PenultimaEstacion, TipoPenultimaEst),  getTypeStation(UltimaEstacion, TipoUltimaEst),
     extremosTipoValido([TipoPrimeraEst, TipoSegundaEst, TipoPenultimaEst, TipoUltimaEst]).  %verifica los estaciones de los extremos para analizar si son validas
 
-%verifica si los extremos de una las lista son tipo terminal o mantencion si la anterior es tipo terminal.
+%verifica si los extremos de una las lista son tipo terminal|combinacion o mantencion si la anterior es tipo terminal.
 extremosTipoValido(["t",_,_,"t"]).
 extremosTipoValido(["m","t",_,"t"]).
 extremosTipoValido(["t",_,"t","m"]).
-extremosTipoValido(["m","t","t","m"]).
+extremosTipoValido(["m","t","t","m"]).          %consideramos todos los casos en que las estaciones extremas sean combinacion o terminal o (mantencion-combinacion) o (mantencio-terminal)
+extremosTipoValido(["c",_,_,"t"]).
+extremosTipoValido(["m","c",_,"t"]).
+extremosTipoValido(["c",_,"t","m"]).
+extremosTipoValido(["m","c","t","m"]).
+extremosTipoValido(["t",_,_,"c"]).
+extremosTipoValido(["m","t",_,"c"]).
+extremosTipoValido(["t",_,"c","m"]).
+extremosTipoValido(["m","c","c","m"]).
+extremosTipoValido(["c",_,_,"c"]).
+extremosTipoValido(["m","c",_,"c"]).
+extremosTipoValido(["c",_,"c","m"]).
+extremosTipoValido(["m","c","c","m"]).
 
 %determina si las secciones de una linea cumplen para ser linea circular, es decir, la primera st1 y ultima st2 son la misma
 circularLine(Sections):-getFirstList(Sections,FirstSections),getLastList(Sections,LastSection),getStation1Section(FirstSections,FirstStation), % no debe verificar extremos porque no hay, es circular

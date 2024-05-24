@@ -48,7 +48,7 @@ PREDICADOS:
     listaSinElementosRepetidos(LIST)
     subwayAddLine(SUBWAY,LINES,SUBWAY)
     subwayAddDriver(SUBWAY,DRIVERS,SUBWAY)
-    subwaySetStationStopTime(SUBWAY,NameStation,StopTime,SUBWAY)
+    subwaySetStationStoptime(SUBWAY,NameStation,StopTime,SUBWAY)
     recorrerLinesModStopTime(LINES,NameStation,StopTime,LINES)
     recorrerSectionsModStopTime(Sections,NameStation,StopTime,Sections)
     subwayAssignTraintoLine(SUBWAY,IdTrain,IdLinea,SUBWAY)
@@ -100,7 +100,7 @@ METAS PRIMARIAS:
     subwayAddTrain: Añade trenes a un subway, dado que no hay trenes repetidos
     subwayAddLine: Añade lineas a un subway, dado que no hay lineas repetidas
     subwayAddDriver: Añade conductores a un subway, dado que no hay drivers repetidos
-    subwaySetStationStopTime: Subway con nuevo tiempo de parada en una estacion en especifico
+    subwaySetStationStoptime: Subway con nuevo tiempo de parada en una estacion en especifico
     subwayAssignTraintoLine: Asignar un tren a una linea en un subway, si es que existen en el subway y son compatibles segun el tipo de riel
     subwayAssignDriverToTrain: Asignar un recorrido a un conductor en un tren, segun si exite el driver, el train, y si las estaciones son de la linea asignadas al tren
     subwayToString: Convierte todos los datos de un subway a un único string.
@@ -145,7 +145,7 @@ METAS SECUNDARIAS:
 
 */
 :-module(tdaSubway,[subway/3,subwayAddTrain/3,subwayAddLine/3,subwayAddDriver/3,getIdSubway/2,getNameSubway/2,getTrainsSubway/2,getLinesSubway/2,
-getDriversSubway/2,getDriver_TrainSubway/2,getLine_TrainsSubway/2,subwayToString/2,subwaySetStationStopTime/4,subwayAssignTraintoLine/4,
+getDriversSubway/2,getDriver_TrainSubway/2,getLine_TrainsSubway/2,subwayToString/2,subwaySetStationStoptime/4,subwayAssignTraintoLine/4,
 subwayAssignDriverToTrain/7,whereIsTrain/4,subwayTrainPath/4]).
 :-use_module(tdaSection).
 :-use_module(tdaStation).
@@ -336,7 +336,7 @@ Grado de Implementacion: 1
 Modifica el tiempo de parada de una estacion especifica dentro de un suwbay
 DOM: metro (TDA subway) X nombre estacion (string) X tiempo de parada segundos (num) X VAR
 Recorrido: VAR metro (Tda subway)*/
-subwaySetStationStopTime(SUBWAY,NameStation,StopTime,NewSubway):- subwayComplete(_,_,_,LINES,_,_,_,SUBWAY),
+subwaySetStationStoptime(SUBWAY,NameStation,StopTime,NewSubway):- subwayComplete(_,_,_,LINES,_,_,_,SUBWAY),
     recorrerLinesModStopTime(LINES,NameStation,StopTime,NewLINES), setLinesSubway(SUBWAY,NewLINES,NewSubway). %se usa modificador
 
 

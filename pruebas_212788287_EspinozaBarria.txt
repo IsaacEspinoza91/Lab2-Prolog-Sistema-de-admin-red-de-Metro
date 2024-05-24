@@ -99,7 +99,7 @@ station( 78, "Facultad de Derecho Julieta Lanteri", "t", 90, ST78),
 
 
 
-%Estaciones L1 metro Estadio Primera Division Chile
+%Estaciones metro Estadio Primera Division Chile
 station( 79, "Estadio Monumental David Arellano -  Colo Colo", "t", 180, ST79),
 station( 80, "Estadio Santa Laura - Union Española", "c",   90, ST80),
 station( 81, "Estadio San Carlos de Apoquindo - U Catolica", "r", 40, ST81),
@@ -417,17 +417,17 @@ subwayAddDriver(Sw2_FutbolChile2, [D0, D1, D2, D3], Sw2_FutbolChile3),
 
 /* Ejemplo Funcionalidad 20 */
 subwayToString(Sw0_Santiago4, String_Sw0_Santiago),
-subwayToString(Sw1_Baires4, Stringdd),
-subwayToString(Sw2_FutbolChile3, String_Sw2_FutbolChile),
+%subwayToString(Sw1_Baires4, String_Sw1_Baires),		%estos ejemplos también funcionan bien pero están comentados para no saturar la consola de Swi-Prolog y que sea más legible
+%subwayToString(Sw2_FutbolChile3, String_Sw2_FutbolChile),	%de igual modo se puede descomentar el % para ver sus ejecucion
 %write(String_Sw2_FutbolChile),   %al imprimir el string se ve de forma ordenada en la consola de SWI-Prolog
 
 
 
 
 /* Ejemplo Funcionalidad 21 */
-subwaySetStationStopTime(Sw0_Santiago4, "USACH", 85, Sw0_Santiago5),
-subwaySetStationStopTime(Sw0_Santiago5, "San Pablo", 91, Sw0_Santiago6),
-subwaySetStationStopTime(Sw1_Baires4, "Peru", 45, Sw1_Baires5),
+subwaySetStationStoptime(Sw0_Santiago4, "USACH", 85, Sw0_Santiago5),
+subwaySetStationStoptime(Sw0_Santiago5, "San Pablo", 91, Sw0_Santiago6),
+subwaySetStationStoptime(Sw1_Baires4, "Peru", 45, Sw1_Baires5),
 
 
 
