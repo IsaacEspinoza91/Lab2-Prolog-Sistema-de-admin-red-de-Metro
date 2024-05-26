@@ -129,7 +129,7 @@ Grado de Implementacion: 1
 Determina el largo total de una linea, la distancia total en km, y el costo total
 DOM: Linea (TDA line) X VAR X VAR X VAR
 Recorrido: VAR largo de linea (num) X VAR distancia de la linea (num) X VAR costo de una linea*/
-lineLength(LINE,LENGTH,Distancia,Costo):-line(_,_,_,Sections,LINE),largoLista(Sections,LENGTH),distanciaTotal(Sections,Distancia),costoTotal(Sections,Costo).
+lineLength(LINE,LENGTH,Distancia,Costo):-getSectionsLine(LINE,Sections),largoLista(Sections,LENGTH),distanciaTotal(Sections,Distancia),costoTotal(Sections,Costo).
 
 %obtener cantidad de elementos de una lista
 largoLista([],0):-!.
@@ -151,7 +151,7 @@ Grado de Implementacion: 1
 Determina el trayecto entre una estacion de origen y una final, la distancia del trayecto y costo
 DOM: Linea (TDA line) X Nombre estacion1 (string) X Nombre estacion2 (string) X VAR X VAR X VAR
 Recorrido: VAR Secciones del trayecto (lista TDAS section) X VAR distancia del trayecto (num) X VAR costo del trayecto (num)*/
-lineSectionLength(LINE,NombreST1,NombreST2,Sections,Distancia,Costo):-line(_,_,_,ListaSections,LINE),getSubListaSections(ListaSections,NombreST1,NombreST2,Sections),
+lineSectionLength(LINE,NombreST1,NombreST2,Sections,Distancia,Costo):-getSectionsLine(LINE,ListaSections),getSubListaSections(ListaSections,NombreST1,NombreST2,Sections),
     distanciaTotal(Sections,Distancia),costoTotal(Sections,Costo).
 
 %obtener sub lista de secciones entre dos secciones especificas, notamos los predicados para los casos en que se encuentre cualquiera de los dos stations primero
@@ -171,8 +171,8 @@ Grado de Implementacion: 1
 Añade un tramo a una linea
 DOM: Linea (TDA Line) X seccion (TDA section) X VAR
 Recorrido: VAR Linea (TDA line)*/
-lineAddSection(LineBefore, Section, LineAfter):-line(ID,Name,RT,SectionsBefore,LineBefore), not(member(Section,SectionsBefore)), % con not member verificamos tramos no repetidos.
-    addSectionToSections(SectionsBefore,Section,SectionsAfter), line(ID,Name,RT,SectionsAfter,LineAfter).
+lineAddSection(LineBefore, Section, LineAfter):-getSectionsLine(LineBefore,SectionsBefore), not(member(Section,SectionsBefore)), % con not member verificamos tramos no repetidos.
+    addSectionToSections(SectionsBefore,Section,SectionsAfter), setSectionsLine(LineBefore,SectionsAfter, LineAfter).
 %recordar que si la seccion esta repetida, retorna false, por lo que se cae la conjuncion de predicados en el script de pruebas
 
 
@@ -183,9 +183,11 @@ Grado de Implementacion: 1
 Determina si un elemeto es una Linea, considerando condiciones como tipo de linea, si todas las estaciones estan conectdas, etc.
 DOM: Linea (TDA line)
 Recorrido: None*/
-isLine(LINE):- line(ID,NombreL,RTL,SectionsL,LINE), number(ID), string(NombreL), string(RTL), checkSections(SectionsL),
+isLine(LINE):- getIdLine(LINE,ID), getNameLine(LINE,NombreL), getRailTypeLine(LINE,RTL), getSectionsLine(LINE,SectionsL),
+    number(ID), string(NombreL), string(RTL), checkSections(SectionsL),
     normalLine(SectionsL), checkAllStationsConnected(SectionsL),!. %caso linea normal
-isLine(LINE):- line(ID,NombreL,RTL,SectionsL,LINE), number(ID), string(NombreL), string(RTL), checkSections(SectionsL),
+isLine(LINE):- getIdLine(LINE,ID), getNameLine(LINE,NombreL), getRailTypeLine(LINE,RTL), getSectionsLine(LINE,SectionsL),
+    number(ID), string(NombreL), string(RTL), checkSections(SectionsL),
     circularLine(SectionsL), checkAllStationsConnected(SectionsL),!. %caso linea cirucular
 
 

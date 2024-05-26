@@ -208,7 +208,7 @@ Grado de Implementacion: 1
 Añadir trenes a una red de metro
 DOM: metro (TDA subway) X trenes (lista TDAs train) X VAR
 Recorrido: VAR metro (TDA Subway)*/
-subwayAddTrain(SUBWAY,AddTRAINS,NewSUBWAY):- subwayComplete(_,_,TRAINS,_,_,_,_,SUBWAY), append(TRAINS,AddTRAINS,NewTRAINS),
+subwayAddTrain(SUBWAY,AddTRAINS,NewSUBWAY):- getTrainsSubway(SUBWAY,TRAINS), append(TRAINS,AddTRAINS,NewTRAINS),
     listaSinElementosRepetidos(NewTRAINS), setTrainsSubway(SUBWAY,NewTRAINS,NewSUBWAY).     %no hay trenes repetidos
 
 %verificar que una lista no tiene elementos repetidos
@@ -224,7 +224,7 @@ Grado de Implementacion: 1
 Añadir lineas a una red de metro
 DOM: metro (TDA subway) X Lineas (lista de TDAs line) X VAR
 Recorrido: VAR metro (TDA subway)*/
-subwayAddLine(SUBWAY,AddLINES,NewSUBWAY):- subwayComplete(_,_,_,LINES,_,_,_,SUBWAY), append(LINES,AddLINES,NewLINES),
+subwayAddLine(SUBWAY,AddLINES,NewSUBWAY):- getLinesSubway(SUBWAY,LINES), append(LINES,AddLINES,NewLINES),
     listaSinElementosRepetidos(NewLINES), setLinesSubway(SUBWAY,NewLINES,NewSUBWAY). %utilizamos modificador del TDA
 
 
@@ -235,7 +235,7 @@ Grado de Implementacion: 1
 Añadir conductores a una red de metro
 DOM: metro (TDA subway) X conductores (lista de TDAs driver) X VAR
 Recorrido: VAR metro (TDA subway)*/
-subwayAddDriver(SUBWAY,AddDRIVERS,NewSUBWAY):- subwayComplete(_,_,_,_,DRIVERS,_,_,SUBWAY), append(DRIVERS,AddDRIVERS,NewDRIVERS),
+subwayAddDriver(SUBWAY,AddDRIVERS,NewSUBWAY):- getDriversSubway(SUBWAY,DRIVERS), append(DRIVERS,AddDRIVERS,NewDRIVERS),
     listaSinElementosRepetidos(NewDRIVERS), setDriversSubway(SUBWAY,NewDRIVERS,NewSUBWAY).
 
 
@@ -335,7 +335,7 @@ Grado de Implementacion: 1
 Modifica el tiempo de parada de una estacion especifica dentro de un suwbay
 DOM: metro (TDA subway) X nombre estacion (string) X tiempo de parada segundos (num) X VAR
 Recorrido: VAR metro (Tda subway)*/
-subwaySetStationStoptime(SUBWAY,NameStation,StopTime,NewSubway):- subwayComplete(_,_,_,LINES,_,_,_,SUBWAY),
+subwaySetStationStoptime(SUBWAY,NameStation,StopTime,NewSubway):- getLinesSubway(SUBWAY,LINES),
     recorrerLinesModStopTime(LINES,NameStation,StopTime,NewLINES), setLinesSubway(SUBWAY,NewLINES,NewSubway). %se usa modificador
 
 
@@ -549,7 +549,6 @@ subwayTrainPath(SUBWAY,TrainID,HoraPreguntada,ListaEstaciones):-
     getSectionsLine(LineaEncontrada,ListaSections),
     getSubListaSections(ListaSections,EstacionInicio,EstacionFin,SectionsDelTramoDelRecorrido), %retorna dla sub lista entre estaciones, da igual cual sale primero. 
     sentidoNormalDeRecorrido(SectionsDelTramoDelRecorrido, EstacionInicio),    %verifica el sentido normal del recorrido
-    %recorrerSectionsYGuardarNombreEstacionesRecorridas(SectionsDelTramoDelRecorrido,NombreEstacionLimite, ListaEstaciones),!.  %obtener lista de nombres del recorrido
     recorrerSectionsDesdeEstacionPreguntadaHastaFinRecorrido(SectionsDelTramoDelRecorrido, NombreEstacionLimite, ListaEstaciones),!.
 %caso sentido inverso del recorrido
 subwayTrainPath(SUBWAY,TrainID,HoraPreguntada,ListaEstaciones):-
@@ -561,7 +560,6 @@ subwayTrainPath(SUBWAY,TrainID,HoraPreguntada,ListaEstaciones):-
     getSectionsLine(LineaEncontrada,ListaSections),
     getSubListaSections(ListaSections,EstacionInicio,EstacionFin,SectionsDelTramoDelRecorrido),
     recorridoInversoDeSections(SectionsDelTramoDelRecorrido, SectionsParaRecorridoInverso),    %invierte el recorrido del orden de una lista de sections
-    %recorrerSectionsYGuardarNombreEstacionesRecorridas(SectionsParaRecorridoInverso,NombreEstacionLimite, ListaEstaciones),!.
     recorrerSectionsDesdeEstacionPreguntadaHastaFinRecorrido(SectionsParaRecorridoInverso, NombreEstacionLimite, ListaEstaciones),!.
 
 %crea una lista con todas los nombres de estaciones desde una estacion especifica hasta el final del recorrido de la lista de sections

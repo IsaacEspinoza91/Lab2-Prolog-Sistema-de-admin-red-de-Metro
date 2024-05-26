@@ -121,8 +121,8 @@ Grado de Implementacion: 1
 Añade un carros a un tren del metro, segun una posicion del carro dentro del tren
 DOM: tren (TDA train) X carro (TDA pcar) X Posicion del carro a ingresar en el tren (num entero >= 0) X VAR
 Recorrido: VAR tren (TDA train)*/
-trainAddCar(TRAIN,PCAR,POSITION,NewTRAIN):- isPcar(PCAR), train(ID,MAKER,RailT,SPEED,PCARsBefore,TRAIN),
-    insertarElementoEnPosicion(PCARsBefore,POSITION,PCAR,PCARsAfter), train(ID,MAKER,RailT,SPEED,PCARsAfter,NewTRAIN).
+trainAddCar(TRAIN,PCAR,POSITION,NewTRAIN):- isPcar(PCAR), getPCARsTrain(TRAIN,PCARsBefore),
+    insertarElementoEnPosicion(PCARsBefore,POSITION,PCAR,PCARsAfter), setPCARsTrain(TRAIN,PCARsAfter,NewTRAIN).
 
 %insertar un elemento en una posicion determina en una lista
 insertarElementoEnPosicion([],0,ELE,[ELE]).    %caso primer elemento de la lista, y se inserta en la posicion 0
@@ -137,8 +137,8 @@ Grado de Implementacion: 1
 Elimina un carro de un tren, segun una posicion determina del carro en el tren
 DOM: tren (TDA train) X Posicion del carro a ingresar en el tren (num entero >= 0) X VAR
 Recorrido: VAR Tren (TDA Train)*/
-trainRemoveCar(TRAIN,POSITION,NewTRAIN):- train(ID,MAKER,RailT,SPEED,PCARsBefore,TRAIN), eliminarElementoEnPosicion(PCARsBefore,POSITION,PCARsAfter),
-    train(ID,MAKER,RailT,SPEED,PCARsAfter,NewTRAIN).
+trainRemoveCar(TRAIN,POSITION,NewTRAIN):- getPCARsTrain(TRAIN,PCARsBefore),
+    eliminarElementoEnPosicion(PCARsBefore,POSITION,PCARsAfter), setPCARsTrain(TRAIN, PCARsAfter, NewTRAIN).
 
 %eliminar un elemento en una posicion determinada en una lista
 eliminarElementoEnPosicion([_|COLA],0,COLA):-!.
@@ -152,7 +152,8 @@ Grado de Implementacion: 1
 Verifica si un elemento es un tren valido, considerando la condiciones como la compatibilidad de tipos caros y compatibilidad de modelos de carros
 DOM: Tren (TDA Train)
 Recorrido: None*/
-isTrain(TRAIN):- train(ID,MAKER,RailT,SPEED,PCARs,TRAIN), number(ID), string(MAKER), string(RailT), number(SPEED), length(PCARs,CantPCARs), CantPCARs >=2,  %condicion para estrucutra minima de 2 carros
+isTrain(TRAIN):- getIdTrain(TRAIN,ID), getMakerTrain(TRAIN,MAKER),getRailTypeTrain(TRAIN,RailT),getSpeedTrain(TRAIN,SPEED),getPCARsTrain(TRAIN,PCARs),
+    number(ID), string(MAKER), string(RailT), number(SPEED), length(PCARs,CantPCARs), CantPCARs >=2,  %condicion para estrucutra minima de 2 carros
     compatibleModelPCARs(PCARs), compatibleTypePCARs(PCARs). 
 
 %verifica que todos los pcar de una lista de pcars sean del mismo modelo de carro 
@@ -181,7 +182,7 @@ Grado de Implementacion: 1
 Determina la capacidad maxima de pasajeros en un tren determinado
 DOM: Tren (TDA Train) X VAR
 Recorrido: VAR capacidad del tren (num)*/
-trainCapacity(TRAIN,CAP):- train(_,_,_,_,PCARs,TRAIN),capacidadTotal(PCARs,CAP).
+trainCapacity(TRAIN,CAP):- getPCARsTrain(TRAIN,PCARs), capacidadTotal(PCARs,CAP).
 
 %obtener la capacidad total de una lista de TDA pcar
 capacidadTotal([],0):-!.
